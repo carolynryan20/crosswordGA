@@ -355,21 +355,20 @@ def fitness(chromosome_child,grid):
     return fit
 
 if __name__ == "__main__":
-    maskName = "small.mask"
-    maskFile = open(maskName, "r")
-    readMask = maskFile.read()
+    # maskName = "small.mask"
+    # maskFile = open(maskName, "r")
+    # readMask = maskFile.read()
+    #
+    # dicoName = "dico.txt"
+    # dicoFile = open(dicoName, "r")
+    # readDico = dicoFile.read()
+    #
+    # main(readMask, dicoFile)
+    #
+    # dicoFile.close()
+    # maskFile.close()
 
-    dicoName = "dico.txt"
-    dicoFile = open(dicoName, "r")
-    readDico = dicoFile.read()
 
-    main(readMask, dicoFile)
-
-    dicoFile.close()
-    maskFile.close()
-
-
-    #if len(sys.argv) != 3:
-     #   sys.exit("Usage: encode_decode.py <maskfile> <wordsfile>")
-    #main(open("extrasmall.mask").read, open("small_dico.txt"))
-    #main(open(sys.argv[1]).read(), open(sys.argv[2]))
+    if len(sys.argv) != 3:
+       sys.exit("Usage: encode_decode.py <maskfile> <wordsfile>")
+    main(open(sys.argv[1]).read(), open(sys.argv[2]))
