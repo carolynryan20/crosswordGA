@@ -23,7 +23,8 @@ max_iterations = 50
 def main(grid, lines):
 #######################select horizontal and vertical words##############################################
 
-    grid = grid.rstrip().splitlines()
+    grid = grid.rstrip(' ').splitlines()
+    print grid
     while grid and not grid[0]:
         del grid[0]
     findIntersections(grid)
@@ -39,11 +40,11 @@ def main(grid, lines):
                 if char != "#":
                     predefined[ligne, colonne] = char
             elif word:
-                if len(word) > MINLEN:
+                if len(word) >= MINLEN:
                     horizontal.append(word[:])
                 del word[:]
         if word:
-            if len(word) > MINLEN:
+            if len(word) >= MINLEN:
                 horizontal.append(word[:])
             del word[:]
 
@@ -56,7 +57,7 @@ def main(grid, lines):
         for ligne in range(len(grid)):
             if colonne >= len(grid[ligne]):
                 if word:
-                    if len(word) > MINLEN:
+                    if len(word) >= MINLEN:
                         vertical.append(word[:])
                     del word[:]
             else:
@@ -67,7 +68,7 @@ def main(grid, lines):
                     if char != "#":
                         predefined[ligne, colonne] = char
                 elif word:
-                    if len(word) > MINLEN:
+                    if len(word) >= MINLEN:
                         vertical.append(word[:])
                     del word[:]
         if word:
