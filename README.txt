@@ -30,3 +30,4 @@ Our EA will evolve to make a viable crossword puzzle. We will start with an inpu
  ----------------------------------------
 | ■ | ■ | ■ | ■ | ■ | ■ | v | ■ | ■ | ■ |
  ----------------------------------------
+

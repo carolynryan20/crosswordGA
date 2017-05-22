@@ -1,0 +1,8 @@
+To Do
+    Mutation: change mutation so we no longer swap words with words always, could complicate with letter swaps?
+
+    Limit # Generations:  Add some sort of indicator so we can limit the number of generations we allow the program to run for
+
+    Weight Letters:  Use a scrabble-like system so that we reward less-common letters being present in the GA
+
+    Display Solution: Display the solution in crossword format rather than the genotype

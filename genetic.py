@@ -1,11 +1,11 @@
-"""Genetic.py
+"""
+   Genetic.py
    Code for CS 361: Evolutionary Computing and Artificial Life Final Project
    Authors:  Nicki Polyakov, Barr Iserloth, and Carolyn Ryan
    Majority of code base taken from open github repository found at https://github.com/groger/crossword-solver
 
    executable: python genetic.py <mask_size>.mask <dictionary>.txt
    Current version successful on mask size small and extrasmall
-
 
    """
 
@@ -24,7 +24,7 @@ def main(grid, lines):
 #######################select horizontal and vertical words##############################################
 
     grid = grid.rstrip(' ').splitlines()
-    print grid
+    # print grid
     while grid and not grid[0]:
         del grid[0]
     findIntersections(grid)
@@ -350,26 +350,15 @@ def mutate(chromosome_child,wordsbylen,length_words):
             chromosome_child[i]=random.choice(words)
     return chromosome_child
 
+
+""" TODO
+    ADD MOB HERE FOR FITNESS """
 def fitness(chromosome_child,grid):
     #check conflicts
     fit = countConflicts2(chromosome_child,grid)
     return fit
 
 if __name__ == "__main__":
-    # maskName = "small.mask"
-    # maskFile = open(maskName, "r")
-    # readMask = maskFile.read()
-    #
-    # dicoName = "dico.txt"
-    # dicoFile = open(dicoName, "r")
-    # readDico = dicoFile.read()
-    #
-    # main(readMask, dicoFile)
-    #
-    # dicoFile.close()
-    # maskFile.close()
-
-
     if len(sys.argv) != 3:
        sys.exit("Usage: encode_decode.py <maskfile> <wordsfile>")
     main(open(sys.argv[1]).read(), open(sys.argv[2]))
