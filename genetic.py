@@ -17,8 +17,7 @@ from time import time
 MINLEN = 3
 mutation_rate = 0.01
 crossover_rate = 0.8
-max_iterations = 50
-
+pop_size = 50
 
 def main(grid, lines):
 #######################select horizontal and vertical words##############################################
@@ -32,13 +31,13 @@ def main(grid, lines):
     horizontal = []
     word = []
     predefined = {}
-    for ligne in range(len(grid)):
-        for colonne in range(len(grid[ligne])):
-            char = grid[ligne][colonne]
+    for line in range(len(grid)):
+        for column in range(len(grid[line])):
+            char = grid[line][column]
             if not char.isspace():
-                word.append((ligne, colonne))
+                word.append((line, column))
                 if char != "#":
-                    predefined[ligne, colonne] = char
+                    predefined[line, column] = char
             elif word:
                 if len(word) >= MINLEN:
                     horizontal.append(word[:])
@@ -50,23 +49,23 @@ def main(grid, lines):
 
     # Extract vertical words
     vertical = []
-    validcolonne = True
-    colonne = 0
-    while validcolonne:
-        validcolonne = False
-        for ligne in range(len(grid)):
-            if colonne >= len(grid[ligne]):
+    validcolumn = True
+    column = 0
+    while validcolumn:
+        validcolumn = False
+        for line in range(len(grid)):
+            if column >= len(grid[line]):
                 if word:
                     if len(word) >= MINLEN:
                         vertical.append(word[:])
                     del word[:]
             else:
-                validcolonne = True
-                char = grid[ligne][colonne]
+                validcolumn = True
+                char = grid[line][column]
                 if not char.isspace():
-                    word.append((ligne, colonne))
+                    word.append((line, column))
                     if char != "#":
-                        predefined[ligne, colonne] = char
+                        predefined[line, column] = char
                 elif word:
                     if len(word) >= MINLEN:
                         vertical.append(word[:])
@@ -75,7 +74,7 @@ def main(grid, lines):
             if len(word) > MINLEN:
                 vertical.append(word[:])
             del word[:]
-        colonne += 1
+        column += 1
 
     hnames = ["h%d" % i for i in range(len(horizontal))]
     vnames = ["v%d" % i for i in range(len(vertical))]
@@ -88,7 +87,7 @@ def main(grid, lines):
     generation_list = []
     new_generation_list= []
     iterations = 0
-    fit=max_iterations
+    fit=pop_size
     solution_found = False
     new_generation_pair = []
 
@@ -103,7 +102,7 @@ def main(grid, lines):
         if l in wordsbylen:
             wordsbylen[l].append(line.upper())
 
-    for i in range(max_iterations):
+    for i in range(pop_size):
         #we get a list of two lists: the first one is the generated chromosome and the second is a list containing lengths of words
         temp=generate_parent(horizontal,vertical,wordsbylen)
         chromosome_parent1_list=temp[0]#we take the generated chromosome
@@ -114,7 +113,7 @@ def main(grid, lines):
     startDate = time()
     while solution_found != True:
         iterations = 0
-        while iterations != max_iterations:
+        while iterations != pop_size:
             #we pick two chromosomes from the generation list
             chromosome_parent1_list = random.choice(generation_list)
             chromosome_parent2_list = random.choice(generation_list)
@@ -134,7 +133,6 @@ def main(grid, lines):
             new_generation_pair.append((i,fitness(string,grid)))
             x = fitness(string,grid)
 
-
         #we sort chromosome in fonction of the value of their fitness
         new_generation_pair.sort(key=lambda x: x[1])
 
@@ -146,7 +144,11 @@ def main(grid, lines):
                 i += 1
             if i == 250:
                 break
-        print "\n\n List of top 10  pairs (chromosome, fitness) is : \n"
+
+        ##### ADD USER INPUT, CHECK IF n_best LESS THAN THAT, IF SO, SET USER INPUT TO n_best LENGTH
+        ##### AKA DON'T HARDCODE THE NUMBER 10
+
+        print "\n\n List of top 10 pairs (chromosome, fitness) is : \n"
         for k in range(10):
             print str(n_best[k]) + "\n"
 
@@ -254,58 +256,58 @@ def countConflicts2(chromosome,grid):
     n = 0
     #########################################
     word = []
-    for ligne in range(len(grid)):
-        for colonne in range(len(grid[ligne])):
-            char = grid[ligne][colonne]
+    for line in range(len(grid)):
+        for column in range(len(grid[line])):
+            char = grid[line][column]
             if not char.isspace():
-                word.append((ligne, colonne))
+                word.append((line, column))
             elif word:
-                if len(word) > MINLEN:
-                    mot = ""
+                if len(word) >= MINLEN:
+                    tmp = ""
                     for i in range(len(word)):
-                        mot = mot + chromosome[n]
+                        tmp = tmp + chromosome[n]
                         n = n + 1
                     horizontal_list.append(word[:])
                 del word[:]
 
         if word:
-            if len(word) > MINLEN:
-                mot = ""
+            if len(word) >= MINLEN:
+                tmp = ""
                 for i in range(len(word)):
-                    mot = mot + chromosome[n]
+                    tmp = tmp + chromosome[n]
                     n = n + 1
                 horizontal_list.append(word[:])
             del word[:]
 
     #########################################
-    validcolonne = True
-    colonne = 0
-    while validcolonne:
-        validcolonne = False
-        for ligne in range(len(grid)):
-            if colonne >= len(grid[ligne]):
+    validcolumn = True
+    column = 0
+    while validcolumn:
+        validcolumn = False
+        for line in range(len(grid)):
+            if column >= len(grid[line]):
                 if word:
-                    if len(word) > MINLEN:
-                        mot = ""
+                    if len(word) >= MINLEN:
+                        tmp = ""
                         for i in range(len(word)):
-                            mot = mot + chromosome[n]
+                            tmp = tmp + chromosome[n]
                             n += 1
                         vertical_list.append(word[:])
                     del word[:]
             else:
-                validcolonne = True
-                char = grid[ligne][colonne]
+                validcolumn = True
+                char = grid[line][column]
                 if not char.isspace():
-                    word.append((ligne, colonne))
+                    word.append((line, column))
                 elif word:
-                    if len(word) > MINLEN:
+                    if len(word) >= MINLEN:
                         vertical_list.append(word[:])
                     del word[:]
         if word:
-            if len(word) > MINLEN:
+            if len(word) >= MINLEN:
                 vertical_list.append(word[:])
             del word[:]
-        colonne += 1
+        column += 1
 
     for sublist in horizontal_list:
         for pair in sublist:
