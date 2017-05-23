@@ -17,8 +17,7 @@ from time import time
 MINLEN = 3
 mutation_rate = 0.01
 crossover_rate = 0.8
-max_iterations = 50
-
+max_iterations = 11
 
 def main(grid, lines):
 #######################select horizontal and vertical words##############################################
@@ -328,7 +327,6 @@ def countConflicts2(chromosome,grid):
                     nbrConflicts += 1
             conflicts_dict.append(pair)
     return nbrConflicts
-
 
 ##################################################encode and put horizontal and vertical words in a same string############################################
 # Do probablistic crossover operation.
