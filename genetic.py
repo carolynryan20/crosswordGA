@@ -18,14 +18,13 @@ from time import time
 MINLEN = 3
 mutation_rate = 0.01
 crossover_rate = 0.8
-<<<<<<< HEAD
 max_iterations = 11
-=======
 pop_size = 50
 max_gens = 100
 printNumBest = 10
+letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2, 'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1, 'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1, 'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
 
->>>>>>> 76efc76378363bd470e63cae79517792bc47251c
+    
 
 def readSettings():
     settings = open("settings.txt", "r")
@@ -60,7 +59,7 @@ def readSettings():
 
     settings.close()
 
-
+new_generation_list= []
 def main(lines):
 #######################select horizontal and vertical words##############################################
 
@@ -116,6 +115,15 @@ def main(lines):
             del word[:]
         column += 1
 
+#    count=0
+#    for word in horizontal:
+#        for letter in word:
+#            count = count + letterValues[letter]
+#    print("THE COUNT IS")
+#    print(count)
+        
+        
+        
     hnames = ["h%d" % i for i in range(len(horizontal))]
     vnames = ["v%d" % i for i in range(len(vertical))]
 
@@ -125,7 +133,7 @@ def main(lines):
     chromosome_child_1 = []
     chromosome_child_2 = []
     generation_list = []
-    new_generation_list= []
+#    new_generation_list= []
     iterations = 0
     fit=pop_size
     solution_found = False
@@ -177,6 +185,9 @@ def main(lines):
 
         #we sort chromosome in fonction of the value of their fitness
         new_generation_pair.sort(key=lambda x: x[1])
+        
+        #reverses list so that higher fitnesses are valued instead of lower fitnesses
+        new_generation_pair=new_generation_pair[::-1]
 
         n_best = []
         i = 0
@@ -335,6 +346,8 @@ def findIntersections(grid):
                 h_check = False
                 v_check = False
     print "\nThe length of the intersection list is : " + str(len(intersectionList)) + '\n'
+#    print("intersectino list is: ")
+#    print(intersectionList)
     return intersectionList
 
 # counts the number of existing conflicts in the chromosome
@@ -420,6 +433,7 @@ def countConflicts2(chromosome,grid):
                     conf_list.append((pair, chromosome[x], chromosome[z]))
                     nbrConflicts += 1
             conflicts_dict.append(pair)
+            
     return nbrConflicts
 
 ##################################################encode and put horizontal and vertical words in a same string############################################
@@ -447,8 +461,29 @@ def mutate(chromosome_child,wordsbylen,length_words):
     ADD MOB HERE FOR FITNESS """
 def fitness(chromosome_child,grid):
     #check conflicts
-    fit = countConflicts2(chromosome_child,grid)
-    return fit
+    fitConflict = countConflicts2(chromosome_child,grid)
+    #finds Value of Letters
+    
+    fitValue = findTotalValue(chromosome_child)
+    
+    #Finds total Fitness
+    totalFitness = fitValue - 10*fitConflict
+    return totalFitness
+
+def findTotalValue(chromosome_child):
+    totalValueCount=0
+    for word in chromosome_child:
+        totalValueCount = totalValueCount + find_value(word)
+    return totalValueCount
+    
+
+def find_value(word):
+    valueCount=0
+    for char in word:
+        valueCount=valueCount+letterValues[char]
+    return valueCount
+
+    
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
