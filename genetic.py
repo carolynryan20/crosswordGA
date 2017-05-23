@@ -176,6 +176,43 @@ def main(grid, lines):
     delta = time() - startDate
     elapsedTime = round(delta,1)
     print "Final time = " + str(elapsedTime)
+    print_solution(horizontal, vertical, chromosome_solution)
+
+def print_solution(h, v, sol):
+    width, height = 6, 6;
+    wordstr = ''.join(str(i) for i in sol[0])
+    wordstr.replace('[','')
+    wordstr.replace("''", '')
+    wordstr.replace(',', '')
+    wordstr.replace(']','')
+    i = 0
+
+    sol_board = [['#' for x in range(width)] for y in range(height)]
+
+    for words in h:
+        for x in range(len(words)):
+            num1 = words[x][0]
+            num2 = words[x][1]
+            sol_board[num1][num2] = wordstr[i]
+            i += 1
+
+    for words in v:
+        for x in range(len(words)):
+            num1 = words[x][0]
+            num2 = words[x][1]
+
+            if(sol_board[num1][num2] == wordstr[i] or sol_board[num1][num2] == '#'):
+                sol_board[num1][num2] = wordstr[i]
+            else:
+                sol_board[num1][num2] = '!'
+            i += 1
+
+    for x in range(width):
+        for y in range(height):
+            if y != width-1:
+                print sol_board[x][y],
+            else:
+                print sol_board[x][y]
 
 def generate_parent(horizontal,vertical,wordsbylen):
     full_horizontal_parent1 = []
