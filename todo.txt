@@ -4,8 +4,13 @@ To Do
 
     Limit # Generations:  Add some sort of indicator so we can limit the number of generations we allow the program to run for
 
+    (there was something else here but i dont remember what??)
+
     Display Solution: Display the solution in crossword format rather than the genotype
 
     (maybe) Mutation: change mutation so we no longer swap words with words always, could complicate with letter swaps?
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 76efc76378363bd470e63cae79517792bc47251c
