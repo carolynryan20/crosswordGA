@@ -38,4 +38,4 @@ What we've done:
     - Debugging so code will run no matter if user input is valid with hardcoded integers
     - Print crossword in the desired grid format
     - Added max generations so format follows more closely that in code we've seen throughout class
-    -
+    - Settings.txt will take in information to use to give parameters to our GA
