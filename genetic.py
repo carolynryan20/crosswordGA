@@ -19,7 +19,7 @@ MINLEN = 3
 mutation_rate = 0.01
 crossover_rate = 0.8
 pop_size = 50
-max_gens = 1
+max_gens = 100
 printNumBest = 10
 
 
@@ -141,8 +141,7 @@ def main(grid, lines):
     startDate = time()
 
     generations = 0
-    #while solution_found != True:
-    while generations < max_gens:
+    while generations < max_gens and solution_found != True:
         iterations = 0
         while iterations != pop_size:
             #we pick two chromosomes from the generation list
@@ -207,7 +206,7 @@ def main(grid, lines):
         # print the computation time every 10 interations
 
         generations += 1
-        
+
         if iterations%10 == 0:
             delta1 = time() - startDate
             elapsedTime = round(delta1,1)
