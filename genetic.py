@@ -18,6 +18,7 @@ MINLEN = 3
 mutation_rate = 0.01
 crossover_rate = 0.8
 pop_size = 50
+max_gens = 20
 
 def main(grid, lines):
 #######################select horizontal and vertical words##############################################
@@ -111,7 +112,10 @@ def main(grid, lines):
         generation_list.append(chromosome_parent1_list)#generation_list is a list of chromosomes(chromosome=list of genes and gene=word)
 
     startDate = time()
-    while solution_found != True:
+
+    generations = 0
+    #while solution_found != True:
+    while generations < max_gens:
         iterations = 0
         while iterations != pop_size:
             #we pick two chromosomes from the generation list
@@ -155,7 +159,7 @@ def main(grid, lines):
         #we check if we have a solution among the new generation
         for i in n_best:
             fit = i[1]
-            if fit == 0:
+            if fit == 0 or generations == max_gens-1:
                 print "fitness is :" + str(fit)+ "\n"
                 solution_found = True
                 chromosome_solution = i #we keep the chromosome solution
@@ -163,11 +167,15 @@ def main(grid, lines):
                 print "Solution chromosome is :"
                 print chromosome_solution
                 print "************************************************************"
+                break
             else:
                 del generation_list[:]
                 for k in n_best:
                     generation_list.append(k[0]) #we're going to create the new child generation from the 10 best chromosome in generation_list
         # print the computation time every 10 interations
+
+        generations += 1
+        
         if iterations%10 == 0:
             delta1 = time() - startDate
             elapsedTime = round(delta1,1)
