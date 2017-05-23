@@ -44,14 +44,22 @@ def readSettings():
     global printNumBest
     printNumBest = int(settings.readline().split("=")[1])
 
+    global grid
+    grid_type = (settings.readline().split("=")[1]).strip('\n')
+    grid_type = grid_type.strip(' ')
+    grid = open(grid_type).read().rstrip(' ').splitlines()
+
+    global grid_h
+    grid_h = len(grid)
+    global grid_w
+    grid_w = len(grid[0])
+
     settings.close()
 
 
-def main(grid, lines):
+def main(lines):
 #######################select horizontal and vertical words##############################################
 
-    grid = grid.rstrip(' ').splitlines()
-    # print grid
     while grid and not grid[0]:
         del grid[0]
     findIntersections(grid)
@@ -218,7 +226,8 @@ def main(grid, lines):
     print_solution(horizontal, vertical, chromosome_solution)
 
 def print_solution(h, v, sol):
-    width, height = 6, 6;
+
+    width, height = grid_w, grid_h;
     wordstr = ''.join(str(i) for i in sol[0])
     wordstr.replace('[','')
     wordstr.replace("''", '')
@@ -246,14 +255,14 @@ def print_solution(h, v, sol):
                 sol_board[num1][num2] = '!'
             i += 1
 
-    for x in range(width):
-        print "------------------------"
-        for y in range(height):
+    for x in range(height):
+        print "----"*width
+        for y in range(width):
             if y != width-1:
-                print "| "+ sol_board[x][y],
+                print "| " + sol_board[x][y],
             else:
-                print "| "+sol_board[x][y] + " |"
-    print "------------------------"
+                print "| " + sol_board[x][y] + " |"
+    print "----"*width
 
 def generate_parent(horizontal,vertical,wordsbylen):
     full_horizontal_parent1 = []
@@ -439,8 +448,8 @@ def fitness(chromosome_child,grid):
     return fit
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-       sys.exit("Usage: encode_decode.py <maskfile> <wordsfile>")
+    if len(sys.argv) != 2:
+       sys.exit("Usage: encode_decode.py <wordsfile>")
 
     readSettings()
-    main(open(sys.argv[1]).read(), open(sys.argv[2]))
+    main(open(sys.argv[1]))
