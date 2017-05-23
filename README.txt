@@ -31,3 +31,11 @@ Our EA will evolve to make a viable crossword puzzle. We will start with an inpu
 | ■ | ■ | ■ | ■ | ■ | ■ | v | ■ | ■ | ■ |
  ----------------------------------------
 
+
+What we've done:
+    - All masks (of proper formatting) are able to work as crossword grid samples
+    - Edited crossover to be what we said in our paper
+    - Debugging so code will run no matter if user input is valid with hardcoded integers
+    - Print crossword in the desired grid format
+    - Added max generations so format follows more closely that in code we've seen throughout class
+    -

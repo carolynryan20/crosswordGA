@@ -14,11 +14,38 @@
 import sys, os, math, string, random
 from time import time
 
+#Default settings
 MINLEN = 3
 mutation_rate = 0.01
 crossover_rate = 0.8
 pop_size = 50
-max_gens = 20
+max_gens = 1
+printNumBest = 10
+
+
+def readSettings():
+    settings = open("settings.txt", "r")
+
+    global MINLEN
+    MINLEN = int(settings.readline().split("=")[1])
+
+    global mutation_rate
+    mutation_rate = float(settings.readline().split("=")[1])
+
+    global crossover_rate
+    crossover_rate = float(settings.readline().split("=")[1])
+
+    global pop_size
+    pop_size = int(settings.readline().split("=")[1])
+
+    global max_gens
+    max_gens = int(settings.readline().split("=")[1])
+
+    global printNumBest
+    printNumBest = int(settings.readline().split("=")[1])
+
+    settings.close()
+
 
 def main(grid, lines):
 #######################select horizontal and vertical words##############################################
@@ -152,9 +179,14 @@ def main(grid, lines):
         ##### ADD USER INPUT, CHECK IF n_best LESS THAN THAT, IF SO, SET USER INPUT TO n_best LENGTH
         ##### AKA DON'T HARDCODE THE NUMBER 10
 
-        print "\n\n List of top 10 pairs (chromosome, fitness) is : \n"
-        for k in range(10):
-            print str(n_best[k]) + "\n"
+        if (printNumBest > len(n_best)):
+            print "\n\n List of top "+str(len(n_best))+" pairs (chromosome, fitness) is : \n"
+        else:
+            print "\n\n List of top "+str(printNumBest)+" pairs (chromosome, fitness) is : \n"
+
+        for k in range(printNumBest):
+            if (k < len(n_best)):
+                print str(n_best[k]) + "\n"
 
         #we check if we have a solution among the new generation
         for i in n_best:
@@ -195,7 +227,7 @@ def print_solution(h, v, sol):
     wordstr.replace(']','')
     i = 0
 
-    sol_board = [['#' for x in range(width)] for y in range(height)]
+    sol_board = [[u"\u25A0" for x in range(width)] for y in range(height)]
 
     for words in h:
         for x in range(len(words)):
@@ -209,18 +241,20 @@ def print_solution(h, v, sol):
             num1 = words[x][0]
             num2 = words[x][1]
 
-            if(sol_board[num1][num2] == wordstr[i] or sol_board[num1][num2] == '#'):
+            if(sol_board[num1][num2] == wordstr[i] or sol_board[num1][num2] == u"\u25A0"):
                 sol_board[num1][num2] = wordstr[i]
             else:
                 sol_board[num1][num2] = '!'
             i += 1
 
     for x in range(width):
+        print "------------------------"
         for y in range(height):
             if y != width-1:
-                print sol_board[x][y],
+                print "| "+ sol_board[x][y],
             else:
-                print sol_board[x][y]
+                print "| "+sol_board[x][y] + " |"
+    print "------------------------"
 
 def generate_parent(horizontal,vertical,wordsbylen):
     full_horizontal_parent1 = []
@@ -408,4 +442,6 @@ def fitness(chromosome_child,grid):
 if __name__ == "__main__":
     if len(sys.argv) != 3:
        sys.exit("Usage: encode_decode.py <maskfile> <wordsfile>")
+
+    readSettings()
     main(open(sys.argv[1]).read(), open(sys.argv[2]))
