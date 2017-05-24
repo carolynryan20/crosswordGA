@@ -4,27 +4,41 @@ At the top of the file there should be a short introduction and/ or overview tha
 
 Our EA will evolve to make a viable crossword puzzle. We will start with an input of a 10x10 empty grid, where some squares in the grid will represent spaces where we can place letters, and some squares in the grid will contain black squares (places where we cannot place letters). Our output would be a grid filled in with words and black squares.  A good solution will include a high number of valid words (both horizontal and vertical), and a low number of invalid words. Our evaluation method will penalize for any invalid words. We think the scope of this project is appropriate - it is doable in a few weeks but isn’t too easy.
 
- \-------------------------------- <br>
-| ■ | ■ | ■ | ■ | b | ■ | ■ | ■ | ■ | ■ | <br>
- \-------------------------------- <br>
-| ■ | ■ | r | y | a | n | ■ | ■ | ■ | ■ | <br>
- \-------------------------------- <br>
-| ■ | ■ | ■ | ■ | r | ■ | p | ■ | ■ | ■ | <br>
- \-------------------------------- <br>
-| ■ | i | s | e | r | l | o | t | h | ■ | <br>
- \-------------------------------- <br>
-| ■ | ■ | ■ | ■ | ■ | ■ | l | ■ | ■ | ■ | <br>
- \-------------------------------- <br>
-| ■ | c | a | r | o | l | y | n | ■ | ■ | <br>
- \-------------------------------- <br>
-| ■ | ■ | ■ | ■ | ■ | ■ | a | ■ | ■ | ■ | <br>
- \-------------------------------- <br>
-| ■ | ■ | ■ | n | i | c | k | i | ■ | ■ | <br>
- \-------------------------------- <br>
-| ■ | ■ | ■ | ■ | ■ | ■ | o | ■ | ■ | ■ | <br>
- \-------------------------------- <br>
-| ■ | ■ | ■ | ■ | ■ | ■ | v | ■ | ■ | ■ | <br>
- \-------------------------------- <br>
++---+---+---+---+---+---+---+---+---+---+
+| ■ | ■ | ■ | ■ | b | ■ | ■ | ■ | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | ■ | r | y | a | n | ■ | ■ | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | ■ | ■ | ■ | r | ■ | p | ■ | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | i | s | e | r | l | o | t | h | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | ■ | ■ | ■ | ■ | ■ | l | ■ | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | c | a | r | o | l | y | n | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | ■ | ■ | ■ | ■ | ■ | a | ■ | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | ■ | ■ | n | i | c | k | i | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | ■ | ■ | ■ | ■ | ■ | o | ■ | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+| ■ | ■ | ■ | ■ | ■ | ■ | v | ■ | ■ | ■ |
++---+---+---+---+---+---+---+---+---+---+
+
+
+
++---------------+---------------+--------------------+
+| Fruit         | Price         | Advantages         |
++===============+===============+====================+
+| Bananas       | first line\   | first line\        |
+|               | next line     | next line          |
++---------------+---------------+--------------------+
+| Bananas       | first line\   | first line\        |
+|               | next line     | next line          |
++---------------+---------------+--------------------+
+
+
 
 ## Code Example
 
