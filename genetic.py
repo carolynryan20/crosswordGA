@@ -13,6 +13,7 @@
 # -*- coding: utf-8 -*-
 import sys, os, math, string, random
 from time import time
+from individual import Individual
 
 letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2, 'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1, 'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1, 'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
 
@@ -171,15 +172,25 @@ def main():
         # NSGA
         # + fitness sharing
         # old v. new
+        individualList = []
         for i in new_generation_list:
             string= "".join(x for x in i)
 
             conflictFit, weightFit = fitness(string, grid)
 
-            # NON-dominated point stuff
+            # new way
+            myIndividual = Individual(i, conflictFit, weightFit)
+            individualList.append(myIndividual)
 
-            new_generation_pair.append((i,conflictFit))
-            #x = fitness(string,grid)
+            # old way
+            new_generation_pair.append((i,weightFit - 10*conflictFit))
+
+
+        frontList = findNonDominatedFronts(individualList)
+        #### WE STILL WANT TO:
+        # do fitness sharing among individuals in the same front to obtain more of the pareto-front
+        #
+        # print str(individualList)
 
         #we sort chromosome in fonction of the value of their fitness
         new_generation_pair.sort(key=lambda x: x[1])
@@ -195,9 +206,6 @@ def main():
                 i += 1
             if i == 250:
                 break
-
-        ##### ADD USER INPUT, CHECK IF n_best LESS THAN THAT, IF SO, SET USER INPUT TO n_best LENGTH
-        ##### AKA DON'T HARDCODE THE NUMBER 10
 
         if (printNumBest > len(n_best)):
             print "\n\n List of top "+str(len(n_best))+" pairs (chromosome, fitness) is : \n"
@@ -435,6 +443,52 @@ def countConflicts2(chromosome,grid):
             conflicts_dict.append(pair)
 
     return nbrConflicts
+
+
+
+def findNonDominatedFronts(individualList):
+    fronts = []
+    fronts.append([])
+    for i in individualList:
+        # print str(i)
+        for other in individualList:
+            if (i.dominates(other)):
+                #print str(i) + " dominates " + str(other)
+                i.dominateSet.append(other)
+            elif (other.dominates(i)):
+                # print str(other) + " dominates " + str(i)
+                i.dominatedByCount += 1
+
+        if (i.dominatedByCount == 0):
+            # individual is non-dominated
+            # want to add individual to the first front
+            fronts[0].append(i)
+            i.rank = 0
+
+    currentFront = 0
+    while (len(fronts[currentFront]) > 0):
+        nextFront = []
+        for i in fronts[currentFront]:
+            for other in i.dominateSet:
+                other.dominatedByCount -= 1
+                if (other.dominatedByCount == 0):
+                    other.rank = currentFront + 1
+                    nextFront.append(other)
+        fronts.append(nextFront)
+        currentFront += 1
+
+    index = 0
+    for i in fronts:
+        print("Front "+ str(index))
+        for j in i:
+            print str(j)
+            print str(j.rank)
+
+        index += 1
+
+    return fronts # [[front1], [front2], ... ] and frontN = [ind1, ind2, ind3, ... ]
+
+
 
 ##################################################encode and put horizontal and vertical words in a same string############################################
 # Do probablistic crossover operation.
