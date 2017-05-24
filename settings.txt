@@ -5,3 +5,4 @@ pop_size = 50
 max_gens = 75
 printNumBest = 10
 gridmask = small
+dictionary = dico

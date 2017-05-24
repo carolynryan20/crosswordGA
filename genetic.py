@@ -14,16 +14,7 @@
 import sys, os, math, string, random
 from time import time
 
-#Default settings
-MINLEN = 3
-mutation_rate = 0.01
-crossover_rate = 0.8
-max_iterations = 11
-pop_size = 50
-max_gens = 100
-printNumBest = 10
 letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2, 'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1, 'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1, 'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
-
 
 def readSettings():
     settings = open("settings.txt", "r")
@@ -56,12 +47,17 @@ def readSettings():
     global grid_w
     grid_w = len(grid[0])
 
+    global lines
+    linesString = (settings.readline().split("=")[1]).strip('\n') + '.txt'
+    linesString = linesString.strip(' ')
+    lines = open(linesString)
+
     settings.close()
 
 new_generation_list= []
 horizontal=[]
 vertical=[]
-def main(lines):
+def main():
 #######################select horizontal and vertical words##############################################
 
     while grid and not grid[0]:
@@ -506,8 +502,8 @@ def findTotalValue(chromosome_child):
     return totalValueCount
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-       sys.exit("Usage: genetic.py <wordsfile>")
+    #if len(sys.argv) != 2:
+     #  sys.exit("Usage: genetic.py <wordsfile>")
 
     readSettings()
-    main(open(sys.argv[1]))
+    main()
