@@ -47,7 +47,7 @@ def readSettings():
     printNumBest = int(settings.readline().split("=")[1])
 
     global grid
-    grid_type = (settings.readline().split("=")[1]).strip('\n')
+    grid_type = (settings.readline().split("=")[1]).strip('\n') + '.mask'
     grid_type = grid_type.strip(' ')
     grid = open(grid_type).read().rstrip(' ').splitlines()
 
@@ -214,11 +214,12 @@ def main(lines):
             else:
                 del generation_list[:]
                 for k in n_best:
-                    generation_list.append(k[0]) #we're going to create the new child generation from the 10 best chromosome in generation_list
-        # print the computation time every 10 interations
+                    generation_list.append(k[0]) #we're going to create the new child generation from the k best chromosome in generation_list
+
 
         generations += 1
 
+        # print the computation time every 10 interations
         if iterations%10 == 0:
             delta1 = time() - startDate
             elapsedTime = round(delta1,1)
@@ -454,7 +455,8 @@ def fitness(chromosome_child,grid):
     fitConflict = countConflicts2(chromosome_child,grid)
     #checks letter values
     fitValue = findTotalValue(chromosome_child)
-    totalFitness = fitValue - 10*fitConflict
+    #Finds total Fitness
+    totalFitness = fitValue - 25*fitConflict
     return totalFitness
 
 def findTotalValue(chromosome_child):
