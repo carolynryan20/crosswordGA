@@ -25,7 +25,6 @@ printNumBest = 10
 letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2, 'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1, 'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1, 'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
 
 
-
 def readSettings():
     settings = open("settings.txt", "r")
 
@@ -48,7 +47,7 @@ def readSettings():
     printNumBest = int(settings.readline().split("=")[1])
 
     global grid
-    grid_type = (settings.readline().split("=")[1]).strip('\n')
+    grid_type = (settings.readline().split("=")[1]).strip('\n') + '.mask'
     grid_type = grid_type.strip(' ')
     grid = open(grid_type).read().rstrip(' ').splitlines()
 
@@ -60,6 +59,8 @@ def readSettings():
     settings.close()
 
 new_generation_list= []
+horizontal=[]
+vertical=[]
 def main(lines):
 #######################select horizontal and vertical words##############################################
 
@@ -67,7 +68,6 @@ def main(lines):
         del grid[0]
     findIntersections(grid)
     # Extract horizontal words
-    horizontal = []
     word = []
     predefined = {}
     for line in range(len(grid)):
@@ -87,7 +87,6 @@ def main(lines):
             del word[:]
 
     # Extract vertical words
-    vertical = []
     validcolumn = True
     column = 0
     while validcolumn:
@@ -115,15 +114,6 @@ def main(lines):
             del word[:]
         column += 1
 
-#    count=0
-#    for word in horizontal:
-#        for letter in word:
-#            count = count + letterValues[letter]
-#    print("THE COUNT IS")
-#    print(count)
-
-
-
     hnames = ["h%d" % i for i in range(len(horizontal))]
     vnames = ["v%d" % i for i in range(len(vertical))]
 
@@ -133,7 +123,6 @@ def main(lines):
     chromosome_child_1 = []
     chromosome_child_2 = []
     generation_list = []
-#    new_generation_list= []
     iterations = 0
     fit=pop_size
     solution_found = False
@@ -238,11 +227,12 @@ def main(lines):
             else:
                 del generation_list[:]
                 for k in n_best:
-                    generation_list.append(k[0]) #we're going to create the new child generation from the 10 best chromosome in generation_list
-        # print the computation time every 10 interations
+                    generation_list.append(k[0]) #we're going to create the new child generation from the k best chromosome in generation_list
+
 
         generations += 1
 
+        # print the computation time every 10 interations
         if iterations%10 == 0:
             delta1 = time() - startDate
             elapsedTime = round(delta1,1)
@@ -252,9 +242,10 @@ def main(lines):
     elapsedTime = round(delta,1)
     print "Final time = " + str(elapsedTime)
     print_solution(horizontal, vertical, chromosome_solution)
+    
 
 def print_solution(h, v, sol):
-
+    
     width, height = grid_w, grid_h;
     wordstr = ''.join(str(i) for i in sol[0])
     wordstr.replace('[','')
@@ -291,6 +282,8 @@ def print_solution(h, v, sol):
             else:
                 print "| " + sol_board[x][y] + " |"
     print "----"*width
+    
+    return sol_board
 
 def generate_parent(horizontal,vertical,wordsbylen):
     full_horizontal_parent1 = []
@@ -359,8 +352,6 @@ def findIntersections(grid):
                 h_check = False
                 v_check = False
     print "\nThe length of the intersection list is : " + str(len(intersectionList)) + '\n'
-#    print("intersectino list is: ")
-#    print(intersectionList)
     return intersectionList
 
 # counts the number of existing conflicts in the chromosome
@@ -480,23 +471,39 @@ def fitness(chromosome_child,grid):
     fitValue = findTotalValue(chromosome_child)
 
     # Finds total Fitness
-    # totalFitness = fitValue - 10*fitConflict
     return fitConflict, fitValue
 
+
 def findTotalValue(chromosome_child):
+    width, height = grid_w, grid_h
+    i = 0
+    sol_board = [["" for x in range(width)] for y in range(height)]
+
+    for words in horizontal:
+        for x in range(len(words)):
+            num1 = words[x][0]
+            num2 = words[x][1]
+            sol_board[num1][num2] = chromosome_child[i]
+            i += 1
+
+    for words in vertical:
+        for x in range(len(words)):
+            num1 = words[x][0]
+            num2 = words[x][1]
+
+            if(sol_board[num1][num2] == chromosome_child[i] or sol_board[num1][num2] == ""):
+                sol_board[num1][num2] = chromosome_child[i]
+            else:
+                sol_board[num1][num2] = ''
+            i += 1
+    
     totalValueCount=0
-    for word in chromosome_child:
-        totalValueCount = totalValueCount + find_value(word)
+    for line in sol_board:
+        for char in line:
+            if (char!=''):
+                totalValueCount=totalValueCount+letterValues[char]
+    
     return totalValueCount
-
-
-def find_value(word):
-    valueCount=0
-    for char in word:
-        valueCount=valueCount+letterValues[char]
-    return valueCount
-
-
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
