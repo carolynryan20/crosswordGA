@@ -24,7 +24,7 @@ max_gens = 100
 printNumBest = 10
 letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2, 'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1, 'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1, 'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
 
-    
+
 
 def readSettings():
     settings = open("settings.txt", "r")
@@ -121,9 +121,9 @@ def main(lines):
 #            count = count + letterValues[letter]
 #    print("THE COUNT IS")
 #    print(count)
-        
-        
-        
+
+
+
     hnames = ["h%d" % i for i in range(len(horizontal))]
     vnames = ["v%d" % i for i in range(len(vertical))]
 
@@ -161,7 +161,7 @@ def main(lines):
     startDate = time()
 
     generations = 0
-    while generations < max_gens and solution_found != True:
+    while generations < max_gens:
         iterations = 0
         while iterations != pop_size:
             #we pick two chromosomes from the generation list
@@ -185,7 +185,7 @@ def main(lines):
 
         #we sort chromosome in fonction of the value of their fitness
         new_generation_pair.sort(key=lambda x: x[1])
-        
+
         #reverses list so that higher fitnesses are valued instead of lower fitnesses
         new_generation_pair=new_generation_pair[::-1]
 
@@ -213,7 +213,7 @@ def main(lines):
         #we check if we have a solution among the new generation
         for i in n_best:
             fit = i[1]
-            if fit == 0 or generations == max_gens-1:
+            if generations == max_gens-1:
                 print "fitness is :" + str(fit)+ "\n"
                 solution_found = True
                 chromosome_solution = i #we keep the chromosome solution
@@ -433,7 +433,7 @@ def countConflicts2(chromosome,grid):
                     conf_list.append((pair, chromosome[x], chromosome[z]))
                     nbrConflicts += 1
             conflicts_dict.append(pair)
-            
+
     return nbrConflicts
 
 ##################################################encode and put horizontal and vertical words in a same string############################################
@@ -463,9 +463,9 @@ def fitness(chromosome_child,grid):
     #check conflicts
     fitConflict = countConflicts2(chromosome_child,grid)
     #finds Value of Letters
-    
+
     fitValue = findTotalValue(chromosome_child)
-    
+
     #Finds total Fitness
     totalFitness = fitValue - 10*fitConflict
     return totalFitness
@@ -475,7 +475,7 @@ def findTotalValue(chromosome_child):
     for word in chromosome_child:
         totalValueCount = totalValueCount + find_value(word)
     return totalValueCount
-    
+
 
 def find_value(word):
     valueCount=0
@@ -483,11 +483,11 @@ def find_value(word):
         valueCount=valueCount+letterValues[char]
     return valueCount
 
-    
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-       sys.exit("Usage: encode_decode.py <wordsfile>")
+       sys.exit("Usage: genetic.py <wordsfile>")
 
     readSettings()
     main(open(sys.argv[1]))
