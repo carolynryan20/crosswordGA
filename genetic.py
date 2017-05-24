@@ -178,10 +178,23 @@ def main(lines):
 
         #faire une liste de paires (chromosome,fitness(chromosome))
         #et la sorter en fonction de la valeur de fitness
+
+        # Take list, loop through to determine dominance so find all non-dominated points
+        # pull them out, give fitness of 1, do the same with 2 ,3 -.....
+        # assign final fit based on dominance
+        # can still minimize one and maximize other!
+        # NSGA
+        # + fitness sharing
+        # old v. new
         for i in new_generation_list:
             string= "".join(x for x in i)
-            new_generation_pair.append((i,fitness(string,grid)))
-            x = fitness(string,grid)
+
+            conflictFit, weightFit = fitness(string, grid)
+
+            # NON-dominated point stuff
+
+            new_generation_pair.append((i,conflictFit))
+            #x = fitness(string,grid)
 
         #we sort chromosome in fonction of the value of their fitness
         new_generation_pair.sort(key=lambda x: x[1])
@@ -462,13 +475,13 @@ def mutate(chromosome_child,wordsbylen,length_words):
 def fitness(chromosome_child,grid):
     #check conflicts
     fitConflict = countConflicts2(chromosome_child,grid)
-    #finds Value of Letters
 
+    #finds Value of Letters
     fitValue = findTotalValue(chromosome_child)
 
-    #Finds total Fitness
-    totalFitness = fitValue - 10*fitConflict
-    return totalFitness
+    # Finds total Fitness
+    # totalFitness = fitValue - 10*fitConflict
+    return fitConflict, fitValue
 
 def findTotalValue(chromosome_child):
     totalValueCount=0
