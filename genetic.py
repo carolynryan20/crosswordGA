@@ -144,6 +144,7 @@ def main():
         length_words=temp[1]#we take the list containing the lengths of words
         generation_list.append(chromosome_parent1_list)#generation_list is a list of chromosomes(chromosome=list of genes and gene=word)
 
+
     startDate = time()
 
     generations = 0
@@ -183,14 +184,20 @@ def main():
             individualList.append(myIndividual)
 
             # old way
-            new_generation_pair.append((i,weightFit - 10*conflictFit))
+            # new_generation_pair.append((i,weightFit - 10*conflictFit))
 
 
-        frontList = findNonDominatedFronts(individualList)
+        frontList, chromFrontList = findNonDominatedFronts(individualList)
         #### WE STILL WANT TO:
         # do fitness sharing among individuals in the same front to obtain more of the pareto-front
-        #
-        # print str(individualList)
+        # complete selection process using this method
+        # currently this is a place holder that is doing the exact same as our old method but using the front lists to do so
+        choiceInd = 0
+        for i in range(len(frontList)):
+            for j in range(len(frontList[i])):
+                if choiceInd < printNumBest:
+                    new_generation_pair.append((frontList[i][j].chromosome, frontList[i][j].letterWeightFit - 10*frontList[i][j].countConflictFit))
+
 
         #we sort chromosome in fonction of the value of their fitness
         new_generation_pair.sort(key=lambda x: x[1])
@@ -478,15 +485,19 @@ def findNonDominatedFronts(individualList):
         currentFront += 1
 
     index = 0
-    for i in fronts:
+    frontChromosome = []
+    for i in range(len(fronts)):
+        frontChromosome.append([])
         print("Front "+ str(index))
-        for j in i:
+        for j in fronts[i]:
+            frontChromosome[i].append(j)
             print str(j)
             print str(j.rank)
 
         index += 1
 
-    return fronts # [[front1], [front2], ... ] and frontN = [ind1, ind2, ind3, ... ]
+    #now returns chromosomes as they have been handled originally
+    return fronts, frontChromosome # [[front1], [front2], ... ] and frontN = [ind1, ind2, ind3, ... ]
 
 
 
