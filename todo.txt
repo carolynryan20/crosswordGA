@@ -1,6 +1,6 @@
 To Do
 
-    MOB Fitness: NSGA + fitness sharing
+    √   MOB Fitness: NSGA + fitness sharing
 
     Fitness selection styles
 

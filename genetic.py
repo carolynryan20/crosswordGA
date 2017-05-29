@@ -250,7 +250,7 @@ def main():
                 chromosome_solution = i #we keep the chromosome solution
                 print "************************************************************"
                 print "Solution chromosome is :"
-                print chromosome_solution
+                print str(chromosome_solution[0].chromosome) + " sharing fitness: "+str(chromosome_solution[0].sharedFit) +", weight fitness: "+str(chromosome_solution[0].letterWeightFit)+", conflicts: " + str(chromosome_solution[0].countConflictFit)
                 print "************************************************************"
                 break
             else:
@@ -271,13 +271,13 @@ def main():
     delta = time() - startDate
     elapsedTime = round(delta,1)
     print "Final time = " + str(elapsedTime)
-    print_solution(horizontal, vertical, chromosome_solution)
+    print_solution(horizontal, vertical, chromosome_solution[0].chromosome)
     
 
 def print_solution(h, v, sol):
     
     width, height = grid_w, grid_h;
-    wordstr = ''.join(str(i) for i in sol[0])
+    wordstr = ''.join(str(i) for i in sol)
     wordstr.replace('[','')
     wordstr.replace("''", '')
     wordstr.replace(',', '')
