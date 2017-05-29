@@ -15,7 +15,10 @@ import sys, os, math, string, random
 from time import time
 from individual import Individual
 
-letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2, 'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1, 'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1, 'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
+letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2, 
+                'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1, 
+                'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1, 
+                'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
 
 def readSettings():
     settings = open("settings.txt", "r")
@@ -113,6 +116,7 @@ def main():
 
     hnames = ["h%d" % i for i in range(len(horizontal))]
     vnames = ["v%d" % i for i in range(len(vertical))]
+    
 
     wordsbylen = {}
     chromosome_parent1_list = []
@@ -175,7 +179,6 @@ def main():
         individualList = []
         for i in new_generation_list:
             string= "".join(x for x in i)
-
             conflictFit, weightFit = fitness(string, grid)
 
             # new way
@@ -355,7 +358,7 @@ def findIntersections(grid):
                 y = 0
                 h_check = False
                 v_check = False
-    print "\nThe length of the intersection list is : " + str(len(intersectionList)) + '\n'
+#    print "\nThe length of the intersection list is : " + str(len(intersectionList)) + '\n'
     return intersectionList
 
 # counts the number of existing conflicts in the chromosome
@@ -441,7 +444,7 @@ def countConflicts2(chromosome,grid):
                     conf_list.append((pair, chromosome[x], chromosome[z]))
                     nbrConflicts += 1
             conflicts_dict.append(pair)
-
+    
     return nbrConflicts
 
 
@@ -501,14 +504,79 @@ def crossover(chromosome_list_parent1,chromosome_list_parent2,length_words):
         chromosome_child = chromosome_list_parent1
     return chromosome_child
 
-# Do probablistic mutation operation.
 def mutate(chromosome_child,wordsbylen,length_words):
-    for i in range(len(length_words)):
-    	if(random.random() <= mutation_rate):
-            words = wordsbylen[len(chromosome_child[i])]
-            random.shuffle(words)
-            chromosome_child[i]=random.choice(words)
+
+    chromosome_child1=chromosome_child
+    chromosome_child1=''.join(chromosome_child1)
+    sol_board=findSolBoard(chromosome_child1)
+    intersections=findIntersections(grid)
+    
+    #what words are in horizontal and vertical
+    horizontalWordList=[]
+    verticalWordList=[]
+    for w in range (len(horizontal)):
+        horizontalWordList.append(chromosome_child[w])
+    verticalWordList=chromosome_child[len(horizontalWordList):]
+    
+    #dictionaries of intersections
+    horizontalIntersectionDict={}
+    for i in range(len(horizontal)):
+        intList=[]
+        for entry in horizontal[i]:
+            if entry in intersections:
+                intList.append(entry)
+        horizontalIntersectionDict[chromosome_child[i]]=intList
+    
+    verticalIntersectionDict={}
+    for i in range(len(vertical)):
+        intList=[]
+        for entry in vertical[i]:
+            if entry in intersections:
+                intList.append(entry)
+        verticalIntersectionDict[chromosome_child[i+len(horizontal)]]=intList
+    
+    for i in range(len(chromosome_child)):
+        if(random.random() <= mutation_rate):
+            if chromosome_child[i] in horizontalWordList:
+                words = wordsbylen[len(chromosome_child[i])]
+                newWordList=[]
+                isTrue= False
+                for entry in (horizontalIntersectionDict[chromosome_child[i]]):
+                    if (isTrue==True):
+                        if (newWordList!=[]):
+                            words=newWordList
+                    if (sol_board[entry[0]][entry[1]]!=''): 
+                        for word in words:
+                            if (word[entry[1]] == chromosome_child[i][entry[1]]):
+                                newWordList.append(word)
+                        random.shuffle(newWordList)
+                        chromosome_child[i]=random.choice(newWordList)
+                    else:
+                        random.shuffle(words)
+                        chromosome_child[i]=random.choice(words)
+                    isTrue = True
+                        
+            else:
+                words = wordsbylen[len(chromosome_child[i])]
+                newWordList=[]
+                isTrue=False
+                for entry in (verticalIntersectionDict[chromosome_child[i]]):
+                    if (isTrue==True):
+                        if (newWordList!=[]):
+                            words=newWordList
+                    if (sol_board[entry[0]][entry[1]]!=''):
+                        for word in words:
+                            if (word[entry[0]] == chromosome_child[i][entry[0]]):
+                                newWordList.append(word)
+                        random.shuffle(newWordList)
+                        chromosome_child[i]=random.choice(newWordList)
+                    else:
+                        random.shuffle(words)
+                        chromosome_child[i]=random.choice(words)
+                    isTrue=True
+            
     return chromosome_child
+    
 
 
 """ TODO
@@ -524,7 +592,7 @@ def fitness(chromosome_child,grid):
     return fitConflict, fitValue
 
 
-def findTotalValue(chromosome_child):
+def findSolBoard(chromosome_child):
     width, height = grid_w, grid_h
     i = 0
     sol_board = [["" for x in range(width)] for y in range(height)]
@@ -546,13 +614,16 @@ def findTotalValue(chromosome_child):
             else:
                 sol_board[num1][num2] = ''
             i += 1
-    
+            
+    return sol_board
+
+def findTotalValue(chromosome_child):
+    sol_board=findSolBoard(chromosome_child)
     totalValueCount=0
     for line in sol_board:
         for char in line:
             if (char!=''):
                 totalValueCount=totalValueCount+letterValues[char]
-    
     return totalValueCount
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
 MINLEN = 3
-mutation_rate = 0.01
+mutation_rate = 1
 crossover_rate = 0.8
 pop_size = 50
 max_gens = 75
 printNumBest = 10
-gridmask = small
+gridmask = extrasmall
 dictionary = dico
