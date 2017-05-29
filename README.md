@@ -61,4 +61,6 @@ What we've done:
     - Added max generations so format follows more closely that in code we've seen throughout class
     - Settings.txt will take in information to use to give parameters to our GA
     - Weighted letters! Uncommon letters increase crossword fitness
+    - Added Non-Dominated Sorting Genetic Algorithm with Fitness Sharing
+    -
 
