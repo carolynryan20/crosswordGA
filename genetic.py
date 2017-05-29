@@ -53,6 +53,9 @@ def readSettings():
     linesString = linesString.strip(' ')
     lines = open(linesString)
 
+    global shareRadius
+    shareRadius = float(settings.readline().split("=")[1])
+
     settings.close()
 
 new_generation_list= []
@@ -65,6 +68,8 @@ def main():
         del grid[0]
     findIntersections(grid)
     # Extract horizontal words
+    global letterCount
+    letterCount = 0
     word = []
     predefined = {}
     for line in range(len(grid)):
@@ -74,6 +79,8 @@ def main():
                 word.append((line, column))
                 if char != "#":
                     predefined[line, column] = char
+                else:
+                    letterCount += 1
             elif word:
                 if len(word) >= MINLEN:
                     horizontal.append(word[:])
@@ -101,6 +108,8 @@ def main():
                     word.append((line, column))
                     if char != "#":
                         predefined[line, column] = char
+                    else:
+                        letterCount += 1
                 elif word:
                     if len(word) >= MINLEN:
                         vertical.append(word[:])
@@ -136,27 +145,31 @@ def main():
         if l in wordsbylen:
             wordsbylen[l].append(line.upper())
 
+    #Makes initial population
     for i in range(pop_size):
         #we get a list of two lists: the first one is the generated chromosome and the second is a list containing lengths of words
         temp=generate_parent(horizontal,vertical,wordsbylen)
         chromosome_parent1_list=temp[0]#we take the generated chromosome
         chromosome_parent1=" ".join(x for x in chromosome_parent1_list)# list to string
         length_words=temp[1]#we take the list containing the lengths of words
-        generation_list.append(chromosome_parent1_list)#generation_list is a list of chromosomes(chromosome=list of genes and gene=word)
-
+        #generation_list.append(chromosome_parent1_list)#generation_list is a list of chromosomes(chromosome=list of genes and gene=word)
+        individual = Individual(chromosome_parent1_list)
+        generation_list.append(individual)
 
     startDate = time()
 
     generations = 0
     while generations < max_gens:
         iterations = 0
+
+        # Make next population
         while iterations != pop_size:
             #we pick two chromosomes from the generation list
             chromosome_parent1_list = random.choice(generation_list)
             chromosome_parent2_list = random.choice(generation_list)
 
             #crossover operation
-            chromosome_child_1 = crossover(chromosome_parent1_list,chromosome_parent2_list,length_words)
+            chromosome_child_1 = crossover(chromosome_parent1_list.chromosome,chromosome_parent2_list.chromosome,length_words)
             chromosome_child_2 = mutate(chromosome_child_1,wordsbylen,length_words)
 
             #new_generation_list is a list of new chromosomes created by mutation and crossover(chromosome=list of genes and gene=word)
@@ -188,15 +201,19 @@ def main():
 
 
         frontList, chromFrontList = findNonDominatedFronts(individualList)
+        for i in frontList:
+            for j in i:
+                new_generation_pair.append((j, j.sharedFit))
+
         #### WE STILL WANT TO:
-        # do fitness sharing among individuals in the same front to obtain more of the pareto-front
         # complete selection process using this method
         # currently this is a place holder that is doing the exact same as our old method but using the front lists to do so
-        choiceInd = 0
-        for i in range(len(frontList)):
-            for j in range(len(frontList[i])):
-                if choiceInd < printNumBest:
-                    new_generation_pair.append((frontList[i][j].chromosome, frontList[i][j].letterWeightFit - 10*frontList[i][j].countConflictFit))
+        # choiceInd = 0
+        # for i in range(len(frontList)):
+        #     for j in range(len(frontList[i])):
+        #         if choiceInd < printNumBest:
+        #
+        #             # new_generation_pair.append((frontList[i][j].chromosome, frontList[i][j].letterWeightFit - 10*frontList[i][j].countConflictFit))
 
 
         #we sort chromosome in fonction of the value of their fitness
@@ -214,6 +231,7 @@ def main():
             if i == 250:
                 break
 
+        print "Generation " + str(generations)
         if (printNumBest > len(n_best)):
             print "\n\n List of top "+str(len(n_best))+" pairs (chromosome, fitness) is : \n"
         else:
@@ -221,7 +239,7 @@ def main():
 
         for k in range(printNumBest):
             if (k < len(n_best)):
-                print str(n_best[k]) + "\n"
+                print str(n_best[k][0].chromosome) + " "+str(n_best[k][1]) + "\n"
 
         #we check if we have a solution among the new generation
         for i in n_best:
@@ -248,6 +266,7 @@ def main():
             delta1 = time() - startDate
             elapsedTime = round(delta1,1)
             print "Intermediate time (every ten iterations ) = " + str(elapsedTime) + " sec \n\n"
+
 
     delta = time() - startDate
     elapsedTime = round(delta,1)
@@ -362,6 +381,8 @@ def findIntersections(grid):
                 y = 0
                 h_check = False
                 v_check = False
+    global numIntersections
+    numIntersections = len(intersectionList)
     print "\nThe length of the intersection list is : " + str(len(intersectionList)) + '\n'
     return intersectionList
 
@@ -470,7 +491,7 @@ def findNonDominatedFronts(individualList):
             # individual is non-dominated
             # want to add individual to the first front
             fronts[0].append(i)
-            i.rank = 0
+            i.rank = 1
 
     currentFront = 0
     while (len(fronts[currentFront]) > 0):
@@ -479,7 +500,7 @@ def findNonDominatedFronts(individualList):
             for other in i.dominateSet:
                 other.dominatedByCount -= 1
                 if (other.dominatedByCount == 0):
-                    other.rank = currentFront + 1
+                    other.rank = currentFront + 2
                     nextFront.append(other)
         fronts.append(nextFront)
         currentFront += 1
@@ -488,18 +509,53 @@ def findNonDominatedFronts(individualList):
     frontChromosome = []
     for i in range(len(fronts)):
         frontChromosome.append([])
-        print("Front "+ str(index))
+        #print("Front "+ str(index+1))
         for j in fronts[i]:
             frontChromosome[i].append(j)
-            print str(j)
-            print str(j.rank)
+            #print str(j)
+            #print str(j.rank)
 
         index += 1
+
+
+
+    # niche_count (i) = sum( share_value(i,j) ) for j = every individual in the population, including i itself!
+    # The share_value of i and j is calculated as below.  (remember d(i,j) is the distance value between individuals i
+    # and j that you worked out above).
+    for front in fronts:
+        for ind_i in range(len(front)):
+            niche_count_i = 0
+            for ind_j in range(len(front)):
+                niche_count_i += shareValue(front[ind_i], front[ind_j])
+            # front[ind_i].niche_count = niche_count_i
+            # sharedFit(i) = dummyFit(i) / niche_count(i)
+            front[ind_i].sharedFit = front[ind_i].rank / niche_count_i
+
 
     #now returns chromosomes as they have been handled originally
     return fronts, frontChromosome # [[front1], [front2], ... ] and frontN = [ind1, ind2, ind3, ... ]
 
 
+
+
+#sh(i,j) = 1 - ( d(i,j) / radius )^2   IF  d(i,j) < radius
+def shareValue(self, other):
+    if distance(self, other) < shareRadius:
+        return 1 - pow((distance(self,other)/shareRadius), 2)
+    else:
+        return 0
+
+
+#d(i,j) = scaleX( F_i (objective X) - F_j (objective X) ) + scaleY( F_i (objective Y) - F_j(objective Y) )
+# letter weight max: 2000
+# intersection: #intersections in current grid
+def distance(self, other):
+        difLetter = self.letterWeightFit - other.letterWeightFit
+        scaledDifLetter = difLetter/(letterCount * 10)
+        difConflict = self.countConflictFit - other.countConflictFit
+        scaledConflict = difConflict/numIntersections
+        distance = scaledDifLetter + scaledConflict
+        return distance
 
 ##################################################encode and put horizontal and vertical words in a same string############################################
 # Do probablistic crossover operation.
@@ -568,7 +624,7 @@ def findTotalValue(chromosome_child):
 
 if __name__ == "__main__":
     #if len(sys.argv) != 2:
-     #  sys.exit("Usage: genetic.py <wordsfile>")
+    #  sys.exit("Usage: genetic.py <wordsfile>")
 
     readSettings()
     main()
