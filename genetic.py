@@ -59,6 +59,9 @@ def readSettings():
     global shareRadius
     shareRadius = float(settings.readline().split("=")[1])
 
+    global tournSize
+    tournSize = int(settings.readline().split("=")[1])
+
     settings.close()
 
 new_generation_list= []
@@ -256,10 +259,8 @@ def main():
                 print str(chromosome_solution[0].chromosome) + " sharing fitness: "+str(chromosome_solution[0].sharedFit) +", weight fitness: "+str(chromosome_solution[0].letterWeightFit)+", conflicts: " + str(chromosome_solution[0].countConflictFit)
                 print "************************************************************"
                 break
-                
-        del generation_list[:]
-        for k in n_best:
-            generation_list.append(k[0]) #we're going to create the new child generation from the k best chromosome in generation_list
+
+        generation_list = tournament(new_generation_pair)
 
 
         del new_generation_pair[:]
@@ -278,6 +279,18 @@ def main():
     print "Final time = " + str(elapsedTime)
     print_solution(horizontal, vertical, chromosome_solution[0].chromosome)
 
+def tournament(population):
+    new_pop = []
+    for i in range(pop_size):
+        tourn = []
+        for j in range(tournSize):
+            participant = random.choice(population)
+            tourn.append(participant)
+
+        tourn.sort(key=lambda x: x[1])
+        tourn = tourn[::-1]
+        new_pop.append(tourn[0][0])
+    return new_pop
 
 def print_solution(h, v, sol):
 
@@ -580,6 +593,7 @@ def crossover(chromosome_list_parent1,chromosome_list_parent2,length_words):
 
 def mutate(chromosome_child,wordsbylen,length_words):
 
+    """
     chromosome_child1=chromosome_child
     chromosome_child1=''.join(chromosome_child1)
     sol_board=findSolBoard(chromosome_child1)
@@ -650,6 +664,14 @@ def mutate(chromosome_child,wordsbylen,length_words):
                     isTrue=True
 
     return chromosome_child
+        """
+    for i in range(len(length_words)):
+    	if(random.random() <= mutation_rate):
+            words = wordsbylen[len(chromosome_child[i])]
+            random.shuffle(words)
+            chromosome_child[i]=random.choice(words)
+    return chromosome_child
+
 
 
 
