@@ -15,9 +15,9 @@ import sys, os, math, string, random
 from time import time
 from individual import Individual
 
-letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2, 
-                'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1, 
-                'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1, 
+letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2,
+                'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1,
+                'O':1, 'P':3, 'Q':10, 'R':1, 'S':1, 'T':1, 'U':1,
                 'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
 
 def readSettings():
@@ -125,7 +125,7 @@ def main():
 
     hnames = ["h%d" % i for i in range(len(horizontal))]
     vnames = ["v%d" % i for i in range(len(vertical))]
-    
+
 
     wordsbylen = {}
     chromosome_parent1_list = []
@@ -275,10 +275,10 @@ def main():
     elapsedTime = round(delta,1)
     print "Final time = " + str(elapsedTime)
     print_solution(horizontal, vertical, chromosome_solution[0].chromosome)
-    
+
 
 def print_solution(h, v, sol):
-    
+
     width, height = grid_w, grid_h;
     wordstr = ''.join(str(i) for i in sol)
     wordstr.replace('[','')
@@ -315,7 +315,7 @@ def print_solution(h, v, sol):
             else:
                 print "| " + sol_board[x][y] + " |"
     print "----"*width
-    
+
     return sol_board
 
 def generate_parent(horizontal,vertical,wordsbylen):
@@ -384,13 +384,12 @@ def findIntersections(grid):
                 y = 0
                 h_check = False
                 v_check = False
-<<<<<<< HEAD
+
 #    print "\nThe length of the intersection list is : " + str(len(intersectionList)) + '\n'
-=======
+
     global numIntersections
     numIntersections = len(intersectionList)
-    print "\nThe length of the intersection list is : " + str(len(intersectionList)) + '\n'
->>>>>>> 26357cda4c452f51e1abfe05acd1c91831d02242
+    #print "\nThe length of the intersection list is : " + str(len(intersectionList)) + '\n'
     return intersectionList
 
 # counts the number of existing conflicts in the chromosome
@@ -476,7 +475,7 @@ def countConflicts2(chromosome,grid):
                     conf_list.append((pair, chromosome[x], chromosome[z]))
                     nbrConflicts += 1
             conflicts_dict.append(pair)
-    
+
     return nbrConflicts
 
 
@@ -581,14 +580,14 @@ def mutate(chromosome_child,wordsbylen,length_words):
     chromosome_child1=''.join(chromosome_child1)
     sol_board=findSolBoard(chromosome_child1)
     intersections=findIntersections(grid)
-    
+
     #what words are in horizontal and vertical
     horizontalWordList=[]
     verticalWordList=[]
     for w in range (len(horizontal)):
         horizontalWordList.append(chromosome_child[w])
     verticalWordList=chromosome_child[len(horizontalWordList):]
-    
+
     #dictionaries of intersections
     horizontalIntersectionDict={}
     for i in range(len(horizontal)):
@@ -597,7 +596,7 @@ def mutate(chromosome_child,wordsbylen,length_words):
             if entry in intersections:
                 intList.append(entry)
         horizontalIntersectionDict[chromosome_child[i]]=intList
-    
+
     verticalIntersectionDict={}
     for i in range(len(vertical)):
         intList=[]
@@ -605,7 +604,7 @@ def mutate(chromosome_child,wordsbylen,length_words):
             if entry in intersections:
                 intList.append(entry)
         verticalIntersectionDict[chromosome_child[i+len(horizontal)]]=intList
-    
+
     for i in range(len(chromosome_child)):
         if(random.random() <= mutation_rate):
             if chromosome_child[i] in horizontalWordList:
@@ -616,7 +615,7 @@ def mutate(chromosome_child,wordsbylen,length_words):
                     if (isTrue==True):
                         if (newWordList!=[]):
                             words=newWordList
-                    if (sol_board[entry[0]][entry[1]]!=''): 
+                    if (sol_board[entry[0]][entry[1]]!=''):
                         for word in words:
                             if (word[entry[1]] == chromosome_child[i][entry[1]]):
                                 newWordList.append(word)
@@ -626,7 +625,7 @@ def mutate(chromosome_child,wordsbylen,length_words):
                         random.shuffle(words)
                         chromosome_child[i]=random.choice(words)
                     isTrue = True
-                        
+
             else:
                 words = wordsbylen[len(chromosome_child[i])]
                 newWordList=[]
@@ -645,9 +644,9 @@ def mutate(chromosome_child,wordsbylen,length_words):
                         random.shuffle(words)
                         chromosome_child[i]=random.choice(words)
                     isTrue=True
-            
+
     return chromosome_child
-    
+
 
 
 """ TODO
@@ -685,7 +684,7 @@ def findSolBoard(chromosome_child):
             else:
                 sol_board[num1][num2] = ''
             i += 1
-            
+
     return sol_board
 
 def findTotalValue(chromosome_child):
