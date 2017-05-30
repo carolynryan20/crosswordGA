@@ -14,6 +14,7 @@
 import sys, os, math, string, random
 from time import time
 from individual import Individual
+import matplotlib.pyplot as plt
 
 letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2,
                 'H':4, 'I':1, 'J':8, 'K':5, 'L':1, 'M':3, 'N':1,
@@ -61,6 +62,10 @@ def readSettings():
 
     global tournSize
     tournSize = int(settings.readline().split("=")[1])
+
+    global MOB
+    MOB = (settings.readline().split("=")[1]).strip('\n')
+    MOB = MOB.strip(' ')
 
     settings.close()
 
@@ -165,6 +170,13 @@ def main():
 
     startDate = time()
 
+    genGraphList = []
+    for i in range(max_gens):
+        genGraphList.append(i+1)
+    avgConfList, avgScoreList = [],[]
+    bestConfList, bestScoreList = [],[]
+    minConfList, minScoreList = [],[]
+
     generations = 0
     while generations < max_gens:
         iterations = 0
@@ -194,22 +206,32 @@ def main():
         # + fitness sharing
         # old v. new
         individualList = []
-        for i in new_generation_list:
-            string= "".join(x for x in i)
-            conflictFit, weightFit = fitness(string, grid)
+        if(MOB == 'y'):
+            for i in new_generation_list:
+                string= "".join(x for x in i)
+                conflictFit, weightFit = fitness(string, grid)
 
-            # new way
-            myIndividual = Individual(i, conflictFit, weightFit)
-            individualList.append(myIndividual)
+                # new way
+                myIndividual = Individual(i, conflictFit, weightFit)
+                individualList.append(myIndividual)
 
-            # old way
-            # new_generation_pair.append((i,weightFit - 10*conflictFit))
+                # old way
+                # new_generation_pair.append((i,weightFit - 10*conflictFit))
 
 
-        frontList, chromFrontList = findNonDominatedFronts(individualList)
-        for i in frontList:
-            for j in i:
-                new_generation_pair.append((j, j.sharedFit))
+            frontList, chromFrontList = findNonDominatedFronts(individualList)
+            for i in frontList:
+                for j in i:
+                    new_generation_pair.append((j, j.sharedFit))
+        else:
+            for i in new_generation_list:
+                string = "".join(x for x in i)
+                conflictFit = fitness(string, grid)[0]
+                myIndividual = Individual(i, conflictFit, 0)
+                individualList.append(myIndividual)
+
+            for i in individualList:
+                    new_generation_pair.append((i, i.countConflictFit))
 
         #### WE STILL WANT TO:
         # complete selection process using this method
@@ -226,7 +248,8 @@ def main():
         new_generation_pair.sort(key=lambda x: x[1])
 
         #reverses list so that higher fitnesses are valued instead of lower fitnesses
-        new_generation_pair=new_generation_pair[::-1]
+        if(MOB == 'y'):
+            new_generation_pair=new_generation_pair[::-1]
 
         n_best = []
         i = 0
@@ -246,6 +269,18 @@ def main():
         for k in range(printNumBest):
             if (k < len(n_best)):
                 print str(n_best[k][0].chromosome) + " "+str(n_best[k][1]) + "\n"
+
+        avgScore = 0
+        avgConflict = 0
+        # letterWeightFit, countConflictFit
+        for i in range(len(new_generation_pair)):
+            avgScore += new_generation_pair[i][0].letterWeightFit
+            avgConflict += new_generation_pair[i][0].countConflictFit
+
+        avgScore = float(avgScore) / float(pop_size)
+        avgConflict = float(avgConflict) / float(pop_size)
+        avgConfList.append(avgConflict)
+        avgScoreList.append(avgScore)
 
         #we check if we have a solution among the new generation
         for i in n_best:
@@ -278,6 +313,10 @@ def main():
     elapsedTime = round(delta,1)
     print "Final time = " + str(elapsedTime)
     print_solution(horizontal, vertical, chromosome_solution[0].chromosome)
+    plt.plot(genGraphList, avgConfList, label='Avg. Conflict Fitness')
+    plt.plot(genGraphList, avgScoreList, label='Avg. Word-score Fitness')
+    plt.legend()
+    plt.show()
 
 def tournament(population):
     new_pop = []
@@ -288,8 +327,11 @@ def tournament(population):
             tourn.append(participant)
 
         tourn.sort(key=lambda x: x[1])
-        tourn = tourn[::-1]
-        new_pop.append(tourn[0][0])
+        if(MOB == 'y'):
+            tourn = tourn[::-1]
+            new_pop.append(tourn[0][0])
+        else:
+            new_pop.append(tourn[0][0])
     return new_pop
 
 def print_solution(h, v, sol):
