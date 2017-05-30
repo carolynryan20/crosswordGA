@@ -342,6 +342,7 @@ def main():
     plt.plot(genGraphList, avgConfList, label='Avg. Conflict Fitness')
     plt.plot(genGraphList, minConfList, label='Max. Conflict Fitness')
     plt.plot(genGraphList, bestConfList, label='Min. Conflict Fitness')
+    plt.axis([0, max_gens, 0, 15])
     plt.legend()
     plt.show()
 
@@ -563,8 +564,6 @@ def countConflicts2(chromosome,grid):
 
     return nbrConflicts
 
-
-
 def findNonDominatedFronts(individualList):
     fronts = []
     fronts.append([])
@@ -626,29 +625,20 @@ def findNonDominatedFronts(individualList):
     #now returns chromosomes as they have been handled originally
     return fronts, frontChromosome # [[front1], [front2], ... ] and frontN = [ind1, ind2, ind3, ... ]
 
-
-
-
-#sh(i,j) = 1 - ( d(i,j) / radius )^2   IF  d(i,j) < radius
 def shareValue(self, other):
     if distance(self, other) < shareRadius:
         return 1 - pow((distance(self,other)/shareRadius), 2)
     else:
         return 0
 
-
-#d(i,j) = scaleX( F_i (objective X) - F_j (objective X) ) + scaleY( F_i (objective Y) - F_j(objective Y) )
-# letter weight max: 2000
-# intersection: #intersections in current grid
 def distance(self, other):
         difLetter = self.letterWeightFit - other.letterWeightFit
-        scaledDifLetter = abs(float(difLetter)/(40.0))
+        scaledDifLetter = abs(float(difLetter)/(20.0))
 
         difConflict = self.countConflictFit - other.countConflictFit
         scaledConflict = abs(float(difConflict)/float(numIntersections))
 
         distance = scaledDifLetter + scaledConflict
-        #print difConflict, scaledConflict, distance
         return distance
 
 ##################################################encode and put horizontal and vertical words in a same string############################################
@@ -743,11 +733,6 @@ def mutate(chromosome_child,wordsbylen,length_words):
             chromosome_child[i]=random.choice(words)
     return chromosome_child
 
-
-
-
-""" TODO
-    ADD MOB HERE FOR FITNESS """
 def fitness(chromosome_child,grid):
     #check conflicts
     fitConflict = countConflicts2(chromosome_child,grid)
@@ -757,7 +742,6 @@ def fitness(chromosome_child,grid):
 
     # Finds total Fitness
     return fitConflict, fitValue
-
 
 def findSolBoard(chromosome_child):
     width, height = grid_w, grid_h
