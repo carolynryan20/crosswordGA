@@ -1,11 +1,11 @@
 min_word_length = 3
-mutation_rate = 0.01
+mutation_rate = 0.05
 crossover_rate = 0.8
-pop_size = 250
-max_gens = 50
+pop_size = 200
+max_gens = 75
 print_num_best = 10
 gridmask = small
 dictionary = dico
 sharing_radius = .3
-tournament_size = 40
+tournament_size = 10
 MOB (y/n) = y

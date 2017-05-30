@@ -272,15 +272,35 @@ def main():
 
         avgScore = 0
         avgConflict = 0
+        minConf = 100
+        maxConf = 0
+        minScore = 100
+        maxScore = 0
         # letterWeightFit, countConflictFit
         for i in range(len(new_generation_pair)):
             avgScore += new_generation_pair[i][0].letterWeightFit
             avgConflict += new_generation_pair[i][0].countConflictFit
 
+            if(new_generation_pair[i][0].letterWeightFit > maxScore):
+                maxScore = new_generation_pair[i][0].letterWeightFit
+            elif(new_generation_pair[i][0].letterWeightFit < minScore):
+                minScore = new_generation_pair[i][0].letterWeightFit
+
+            if(new_generation_pair[i][0].countConflictFit > maxConf):
+                maxConf = new_generation_pair[i][0].countConflictFit
+            elif(new_generation_pair[i][0].countConflictFit < minConf):
+                minConf = new_generation_pair[i][0].countConflictFit
+
+
         avgScore = float(avgScore) / float(pop_size)
         avgConflict = float(avgConflict) / float(pop_size)
         avgConfList.append(avgConflict)
         avgScoreList.append(avgScore)
+        minConfList.append(minConf)
+        bestConfList.append(maxConf)
+        minScoreList.append(minScore)
+        bestScoreList.append(maxScore)
+
 
         #we check if we have a solution among the new generation
         for i in n_best:
@@ -313,10 +333,18 @@ def main():
     elapsedTime = round(delta,1)
     print "Final time = " + str(elapsedTime)
     print_solution(horizontal, vertical, chromosome_solution[0].chromosome)
-    plt.plot(genGraphList, avgConfList, label='Avg. Conflict Fitness')
     plt.plot(genGraphList, avgScoreList, label='Avg. Word-score Fitness')
+    plt.plot(genGraphList, bestScoreList, label='Max. Word-score Fitness')
+    plt.plot(genGraphList, minScoreList, label='Min. Word-score Fitness')
     plt.legend()
     plt.show()
+
+    plt.plot(genGraphList, avgConfList, label='Avg. Conflict Fitness')
+    plt.plot(genGraphList, minConfList, label='Max. Conflict Fitness')
+    plt.plot(genGraphList, bestConfList, label='Min. Conflict Fitness')
+    plt.legend()
+    plt.show()
+
 
 def tournament(population):
     new_pop = []
@@ -614,12 +642,13 @@ def shareValue(self, other):
 # intersection: #intersections in current grid
 def distance(self, other):
         difLetter = self.letterWeightFit - other.letterWeightFit
-        scaledDifLetter = abs(float(difLetter)/(letterCount * 10.0))
+        scaledDifLetter = abs(float(difLetter)/(40.0))
 
         difConflict = self.countConflictFit - other.countConflictFit
         scaledConflict = abs(float(difConflict)/float(numIntersections))
 
         distance = scaledDifLetter + scaledConflict
+        #print difConflict, scaledConflict, distance
         return distance
 
 ##################################################encode and put horizontal and vertical words in a same string############################################
