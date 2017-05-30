@@ -256,12 +256,14 @@ def main():
                 print str(chromosome_solution[0].chromosome) + " sharing fitness: "+str(chromosome_solution[0].sharedFit) +", weight fitness: "+str(chromosome_solution[0].letterWeightFit)+", conflicts: " + str(chromosome_solution[0].countConflictFit)
                 print "************************************************************"
                 break
-            else:
-                del generation_list[:]
-                for k in n_best:
-                    generation_list.append(k[0]) #we're going to create the new child generation from the k best chromosome in generation_list
+                
+        del generation_list[:]
+        for k in n_best:
+            generation_list.append(k[0]) #we're going to create the new child generation from the k best chromosome in generation_list
 
 
+        del new_generation_pair[:]
+        del new_generation_list[:]
         generations += 1
 
         # print the computation time every 10 interations
@@ -557,9 +559,11 @@ def shareValue(self, other):
 # intersection: #intersections in current grid
 def distance(self, other):
         difLetter = self.letterWeightFit - other.letterWeightFit
-        scaledDifLetter = difLetter/(letterCount * 10)
+        scaledDifLetter = abs(float(difLetter)/(letterCount * 10.0))
+
         difConflict = self.countConflictFit - other.countConflictFit
-        scaledConflict = difConflict/numIntersections
+        scaledConflict = abs(float(difConflict)/float(numIntersections))
+
         distance = scaledDifLetter + scaledConflict
         return distance
 
