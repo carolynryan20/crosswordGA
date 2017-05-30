@@ -306,13 +306,7 @@ def main():
         for i in n_best:
             fit = i[1]
             if generations == max_gens-1:
-                print "fitness is :" + str(fit)+ "\n"
-                solution_found = True
-                chromosome_solution = i #we keep the chromosome solution
-                print "************************************************************"
-                print "Solution chromosome is :"
-                print str(chromosome_solution[0].chromosome) + " sharing fitness: "+str(chromosome_solution[0].sharedFit) +", weight fitness: "+str(chromosome_solution[0].letterWeightFit)+", conflicts: " + str(chromosome_solution[0].countConflictFit)
-                print "************************************************************"
+                #chromosome_solution = i #we keep the chromosome solution
                 break
 
         generation_list = tournament(new_generation_pair)
@@ -332,7 +326,30 @@ def main():
     delta = time() - startDate
     elapsedTime = round(delta,1)
     print "Final time = " + str(elapsedTime)
-    print_solution(horizontal, vertical, chromosome_solution[0].chromosome)
+    maxWeight = Individual([], numIntersections, 0) # worst possible ever chromosome
+    minConflict = Individual([], numIntersections, 0)
+
+    for i in frontList[0]:
+        if i.letterWeightFit > maxWeight.letterWeightFit:
+            maxWeight = i
+        if i.countConflictFit < minConflict.countConflictFit:
+            minConflict = i
+
+    print "************************************************************"
+    print "Solution chromosome with max letter weight is:"
+    print str(maxWeight.chromosome) + " sharing fitness: "+str(maxWeight.sharedFit) +", weight fitness: "+str(maxWeight.letterWeightFit)+", conflicts: " + str(maxWeight.countConflictFit)
+    print
+    print_solution(horizontal, vertical, maxWeight.chromosome)
+    print "************************************************************"
+    print
+    print "Solution chromosome with min conflicts is:"
+    print str(minConflict.chromosome) + " sharing fitness: "+str(minConflict.sharedFit) +", weight fitness: "+str(minConflict.letterWeightFit)+", conflicts: " + str(minConflict.countConflictFit)
+    print
+    print_solution(horizontal, vertical, minConflict.chromosome)
+    print "************************************************************"
+
+
+
     plt.plot(genGraphList, avgScoreList, label='Avg. Word-score Fitness')
     plt.plot(genGraphList, bestScoreList, label='Max. Word-score Fitness')
     plt.plot(genGraphList, minScoreList, label='Min. Word-score Fitness')
