@@ -306,12 +306,13 @@ def main():
         for i in n_best:
             fit = i[1]
             if generations == max_gens-1:
-                chromosome_solution = i #we keep the chromosome solution
-                print "************************************************************"
-                print "Solution chromosome is :"
-                print_solution(horizontal, vertical, i[0].chromosome)
-                print "************************************************************"
-                #chromosome_solution = i #we keep the chromosome solution
+                if(MOB == 'n'):
+                    chromosome_solution = i #we keep the chromosome solution
+                    print "************************************************************"
+                    print "Solution chromosome is :"
+                    print_solution(horizontal, vertical, i[0].chromosome)
+                    print "************************************************************"
+                    #chromosome_solution = i #we keep the chromosome solution
                 break
 
         generation_list = tournament(new_generation_pair)
