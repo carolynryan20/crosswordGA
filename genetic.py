@@ -679,8 +679,6 @@ def crossover(chromosome_list_parent1,chromosome_list_parent2,length_words):
     return chromosome_child
 
 def mutate(chromosome_child,wordsbylen,length_words):
-
-    """
     chromosome_child1=chromosome_child
     chromosome_child1=''.join(chromosome_child1)
     sol_board=findSolBoard(chromosome_child1)
@@ -693,13 +691,24 @@ def mutate(chromosome_child,wordsbylen,length_words):
         horizontalWordList.append(chromosome_child[w])
     verticalWordList=chromosome_child[len(horizontalWordList):]
 
+    #starting indexes of words should be subtracted from the rest
+    horizontalStartDict={}
+    for i in range(len(horizontal)):
+        horizontalStartDict[chromosome_child[i]]=horizontal[i][0][1]
+
+    verticalStartDict={}
+    for i in range(len(vertical)):
+        verticalStartDict[chromosome_child[i+len(horizontal)]]=vertical[i][0][0]
+
+
     #dictionaries of intersections
     horizontalIntersectionDict={}
     for i in range(len(horizontal)):
         intList=[]
         for entry in horizontal[i]:
             if entry in intersections:
-                intList.append(entry)
+                newEntry = (entry[0], entry[1] - horizontal[i][0][1])
+                intList.append(newEntry)
         horizontalIntersectionDict[chromosome_child[i]]=intList
 
     verticalIntersectionDict={}
@@ -707,57 +716,83 @@ def mutate(chromosome_child,wordsbylen,length_words):
         intList=[]
         for entry in vertical[i]:
             if entry in intersections:
-                intList.append(entry)
+                newEntry = (entry[0] - vertical[i][0][0], entry[1])
+                intList.append(newEntry)
         verticalIntersectionDict[chromosome_child[i+len(horizontal)]]=intList
+
+
+    # print "Horizontal and Vertical"
+    # print horizontalIntersectionDict
+    # print verticalIntersectionDict
+
 
     for i in range(len(chromosome_child)):
         if(random.random() <= mutation_rate):
             if chromosome_child[i] in horizontalWordList:
-                words = wordsbylen[len(chromosome_child[i])]
-                newWordList=[]
-                isTrue= False
-                for entry in (horizontalIntersectionDict[chromosome_child[i]]):
-                    if (isTrue==True):
-                        if (newWordList!=[]):
-                            words=newWordList
-                    if (sol_board[entry[0]][entry[1]]!=''):
-                        for word in words:
-                            if (word[entry[1]] == chromosome_child[i][entry[1]]):
-                                newWordList.append(word)
-                        random.shuffle(newWordList)
-                        chromosome_child[i]=random.choice(newWordList)
-                    else:
-                        random.shuffle(words)
-                        chromosome_child[i]=random.choice(words)
-                    isTrue = True
+                words = wordsbylen[len(chromosome_child[i])][:]
 
+                #for entry in (horizontalIntersectionDict[chromosome_child[i]]):
+                # print horizontalIntersectionDict[chromosome_child[i]]
+                if (sol_board[entry[0]][entry[1]]!=''): #if there is not already a conflict there
+                    validWords = findNonConflictingWords(words, chromosome_child[i], horizontalIntersectionDict[chromosome_child[i]], True)
+                    # print "VALID WORDS"
+                    # print validWords
+                    chromosome_child[i]=random.choice(validWords)
+                else:
+                    random.shuffle(words)
+                    chromosome_child[i]=random.choice(words)
             else:
                 words = wordsbylen[len(chromosome_child[i])]
-                newWordList=[]
-                isTrue=False
-                for entry in (verticalIntersectionDict[chromosome_child[i]]):
-                    if (isTrue==True):
-                        if (newWordList!=[]):
-                            words=newWordList
-                    if (sol_board[entry[0]][entry[1]]!=''):
-                        for word in words:
-                            if (word[entry[0]] == chromosome_child[i][entry[0]]):
-                                newWordList.append(word)
-                        random.shuffle(newWordList)
-                        chromosome_child[i]=random.choice(newWordList)
-                    else:
-                        random.shuffle(words)
-                        chromosome_child[i]=random.choice(words)
-                    isTrue=True
+                #for entry in (verticalIntersectionDict[chromosome_child[i]]):
+                if (sol_board[entry[0]][entry[1]]!=''): #if there is not already a conflict there
+                    validWords = findNonConflictingWords(words, chromosome_child[i], verticalIntersectionDict[chromosome_child[i]], False)
+                    # print "VALID WORDS"
+                    # print validWords
+                    chromosome_child[i]=random.choice(validWords)
+                else:
+                    random.shuffle(words)
+                    chromosome_child[i]=random.choice(words)
+
 
     return chromosome_child
-        """
-    for i in range(len(length_words)):
-    	if(random.random() <= mutation_rate):
-            words = wordsbylen[len(chromosome_child[i])]
-            random.shuffle(words)
-            chromosome_child[i]=random.choice(words)
-    return chromosome_child
+    # """for i in range(len(length_words)):
+    # 	if(random.random() <= mutation_rate):
+    #         words = wordsbylen[len(chromosome_child[i])]
+    #         random.shuffle(words)
+    #         chromosome_child[i]=random.choice(words)
+    # return chromosome_child"""
+
+
+def findNonConflictingWords(wordsPossible, givenWord, intersectionsInWord, isHorizontal):
+    validWords = wordsPossible[:]
+    oldValids = validWords[:]
+
+    if givenWord in validWords:
+        del validWords[validWords.index(givenWord)]
+
+    for intersection in intersectionsInWord:
+        oldValids = validWords[:]
+
+        if isHorizontal == True:
+            intersectionIndex = intersection[1]
+        else:
+            intersectionIndex = intersection[0]
+
+        charDesired = givenWord[intersectionIndex]
+        wordIndex = 0
+        while wordIndex < (len(validWords)-1):
+            if validWords[wordIndex][intersectionIndex] != charDesired:
+                del validWords[wordIndex]
+            else:
+                wordIndex += 1
+
+    if not validWords and oldValids:
+        return oldValids
+    elif not validWords:
+        return wordsPossible
+    else:
+        return validWords
+
 
 def fitness(chromosome_child,grid):
     #check conflicts
