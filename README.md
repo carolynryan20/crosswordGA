@@ -1,42 +1,10 @@
-## Synopsis
-
-Our EA will evolve to make a viable crossword puzzle. We will start with an input of an empty grid, where some squares in the grid will represent spaces where we can place letters, and some squares in the grid will contain black squares (places where we cannot place letters). Our output would be a grid filled in with words and black squares.  A good solution will include a high number of valid words (both horizontal and vertical), and a low number of invalid words. Our evaluation method will penalize for any invalid words. We think the scope of this project is appropriate - it is doable in a few weeks but isn’t too easy.
-
-|   |   |   |   |   |   |   |   |   |   |
-|---|---|---|---|---|---|---|---|---|---|
-| ■ | ■ | ■ | ■ | b | ■ | ■ | ■ | ■ | ■ |
-| ■ | ■ | r | y | a | n | ■ | ■ | ■ | ■ |
-| ■ | ■ | ■ | ■ | r | ■ | p | ■ | ■ | ■ |
-| ■ | i | s | e | r | l | o | t | h | ■ |
-| ■ | ■ | ■ | ■ | ■ | ■ | l | ■ | ■ | ■ |
-| ■ | c | a | r | o | l | y | n | ■ | ■ |
-| ■ | ■ | ■ | ■ | ■ | ■ | a | ■ | ■ | ■ |
-| ■ | ■ | ■ | n | i | c | k | i | ■ | ■ |
-| ■ | ■ | ■ | ■ | ■ | ■ | o | ■ | ■ | ■ |
-| ■ | ■ | ■ | ■ | ■ | ■ | v | ■ | ■ | ■ |
-## Motivation
-
-This project acts as a final project for CS 361: Evolutionary Computing and Artificial Life.  We have an EA here that will create a crossword puzzle to fill out a grid.  To further complicate the project, we added letter weights so less common letters are weighted so as to increase fitness in complicated crosswords.  We also added Multi-Objective fitness calculation in the form of NSGA and fitness sharing.
-
-## Installation
+## How to Compile and Run
 
 executable: python genetic.py
+
 to change EA parameters look to settings.txt
 
 dependency: imports matplotlib.pyplot for graph popups
-
-## Tests
-
-Example tests and parameters for settings.txt can be found in the report.pdf.
-
-## Contributors
-
-Authors:  Nicki Polyakov, Barr Iserloth, and Carolyn Ryan
-
-## License
-
-Majority of code base taken from open github repository found at https://github.com/groger/crossword-solver. Recieved great help from Sherri Goings on how to implement NSGA and fitness sharing.  Also for teaching us everything we used for this project.
-
 
 ## Our Additions
 
@@ -65,3 +33,36 @@ Added individual.py, a class that stores all information for individuals. (indiv
 Added optional MOB or single objective fitnesses. (throughout, mostly fit calculation and selection)
 
 Added graphing ability to see the changes in fitness over time. (line 360, plots)
+
+
+## Synopsis
+
+Our EA will evolve to make a viable crossword puzzle. We will start with an input of an empty grid, where some squares in the grid will represent spaces where we can place letters, and some squares in the grid will contain black squares (places where we cannot place letters). Our output would be a grid filled in with words and black squares.  A good solution will include a high number of valid words (both horizontal and vertical), and a low number of invalid words. Our evaluation method will penalize for any invalid words. We think the scope of this project is appropriate - it is doable in a few weeks but isn’t too easy.
+
+|   |   |   |   |   |   |   |   |   |   |
+|---|---|---|---|---|---|---|---|---|---|
+| ■ | ■ | ■ | ■ | b | ■ | ■ | ■ | ■ | ■ |
+| ■ | ■ | r | y | a | n | ■ | ■ | ■ | ■ |
+| ■ | ■ | ■ | ■ | r | ■ | p | ■ | ■ | ■ |
+| ■ | i | s | e | r | l | o | t | h | ■ |
+| ■ | ■ | ■ | ■ | ■ | ■ | l | ■ | ■ | ■ |
+| ■ | c | a | r | o | l | y | n | ■ | ■ |
+| ■ | ■ | ■ | ■ | ■ | ■ | a | ■ | ■ | ■ |
+| ■ | ■ | ■ | n | i | c | k | i | ■ | ■ |
+| ■ | ■ | ■ | ■ | ■ | ■ | o | ■ | ■ | ■ |
+| ■ | ■ | ■ | ■ | ■ | ■ | v | ■ | ■ | ■ |
+## Motivation
+
+This project acts as a final project for CS 361: Evolutionary Computing and Artificial Life.  We have an EA here that will create a crossword puzzle to fill out a grid.  To further complicate the project, we added letter weights so less common letters are weighted so as to increase fitness in complicated crosswords.  We also added Multi-Objective fitness calculation in the form of NSGA and fitness sharing.
+
+## Tests
+
+Example tests and parameters for settings.txt can be found in the report.pdf.
+
+## Contributors
+
+Authors:  Nicki Polyakov, Barr Iserloth, and Carolyn Ryan
+
+## License
+
+Majority of code base taken from open github repository found at https://github.com/groger/crossword-solver. Recieved great help from Sherri Goings on how to implement NSGA and fitness sharing.  Also for teaching us everything we used for this project.
