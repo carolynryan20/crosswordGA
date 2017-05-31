@@ -22,55 +22,64 @@ letterValues = {'A':1, 'B':3, 'C':3, 'D':2, 'E':1, 'F':4, 'G':2,
                 'V':4, 'W':4, 'X':8, 'Y':4, 'Z':10}
 
 def readSettings():
-    settings = open("settings.txt", "r")
+    try:
+        settings = open("settings.txt", "r")
 
-    global MINLEN
-    MINLEN = int(settings.readline().split("=")[1])
+        global MINLEN
+        MINLEN = int(settings.readline().split("=")[1])
 
-    global mutation_rate
-    mutation_rate = float(settings.readline().split("=")[1])
+        global mutation_rate
+        mutation_rate = float(settings.readline().split("=")[1])
 
-    global crossover_rate
-    crossover_rate = float(settings.readline().split("=")[1])
+        global crossover_rate
+        crossover_rate = float(settings.readline().split("=")[1])
 
-    global pop_size
-    pop_size = int(settings.readline().split("=")[1])
+        global pop_size
+        pop_size = int(settings.readline().split("=")[1])
 
-    global max_gens
-    max_gens = int(settings.readline().split("=")[1])
+        global max_gens
+        max_gens = int(settings.readline().split("=")[1])
 
-    global printNumBest
-    printNumBest = int(settings.readline().split("=")[1])
+        global printNumBest
+        printNumBest = int(settings.readline().split("=")[1])
 
-    global grid
-    grid_type = (settings.readline().split("=")[1]).strip('\n') + '.mask'
-    grid_type = grid_type.strip(' ')
-    grid = open(grid_type).read().rstrip(' ').splitlines()
+        global grid
+        grid_type = (settings.readline().split("=")[1]).strip('\n') + '.mask'
+        grid_type = grid_type.strip(' ')
+        grid = open(grid_type).read().rstrip(' ').splitlines()
 
-    global grid_h
-    grid_h = len(grid)
-    global grid_w
-    grid_w = len(grid[0])
+        global grid_h
+        grid_h = len(grid)
+        global grid_w
+        grid_w = len(grid[0])
 
-    global lines
-    linesString = (settings.readline().split("=")[1]).strip('\n') + '.txt'
-    linesString = linesString.strip(' ')
-    lines = open(linesString)
+        global lines
+        linesString = (settings.readline().split("=")[1]).strip('\n') + '.txt'
+        linesString = linesString.strip(' ')
+        lines = open(linesString)
 
-    global shareRadius
-    shareRadius = float(settings.readline().split("=")[1])
+        global shareRadius
+        shareRadius = float(settings.readline().split("=")[1])
 
-    global tournSize
-    tournSize = int(settings.readline().split("=")[1])
+        global tournSize
+        tournSize = int(settings.readline().split("=")[1])
 
-    global MOB
-    MOB = (settings.readline().split("=")[1]).strip('\n')
-    MOB = MOB.strip(' ')
+        global MOB
+        MOB = (settings.readline().split("=")[1]).strip('\n')
+        MOB = MOB.strip(' ')
 
-    global mutation_kind
-    mutation_kind = int(settings.readline().split("=")[1])
+        global mutation_kind
+        mutation_kind = int(settings.readline().split("=")[1])
 
-    settings.close()
+        settings.close()
+    except:
+        print("*********************************** ERROR IN READ SETTINGS.TXT ***********************************")
+        print("Make sure you have a settings.txt file with 12 lines and all valid assignments on each line!")
+        print("Integers: min_word_length, pop_size, max_gens, print_num_best, tournament_size, mutation_kind")
+        print("Floats: mutation_rate, crossover_rate, sharing_radius")
+        print("Other: MOB y or n")
+        print("**************************************************************************************************")
+        quit()
 
 new_generation_list= []
 horizontal=[]
@@ -850,8 +859,5 @@ def findTotalValue(chromosome_child):
     return totalValueCount
 
 if __name__ == "__main__":
-    #if len(sys.argv) != 2:
-    #  sys.exit("Usage: genetic.py <wordsfile>")
-
     readSettings()
     main()
