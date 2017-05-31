@@ -67,6 +67,9 @@ def readSettings():
     MOB = (settings.readline().split("=")[1]).strip('\n')
     MOB = MOB.strip(' ')
 
+    global mutation_kind
+    mutation_kind = int(settings.readline().split("=")[1])
+
     settings.close()
 
 new_generation_list= []
@@ -189,7 +192,11 @@ def main():
 
             #crossover operation
             chromosome_child_1 = crossover(chromosome_parent1_list.chromosome,chromosome_parent2_list.chromosome,length_words)
-            chromosome_child_2 = mutate(chromosome_child_1,wordsbylen,length_words)
+
+            if mutation_kind == 0:
+                chromosome_child_2 = mutateCustom(chromosome_child_1,wordsbylen,length_words)
+            else:
+                chromosome_child_2 = mutateRandom(chromosome_child_1,wordsbylen,length_words)
 
             #new_generation_list is a list of new chromosomes created by mutation and crossover(chromosome=list of genes and gene=word)
             new_generation_list.append(chromosome_child_2)
@@ -676,7 +683,7 @@ def crossover(chromosome_list_parent1,chromosome_list_parent2,length_words):
         chromosome_child = chromosome_list_parent1
     return chromosome_child
 
-def mutate(chromosome_child,wordsbylen,length_words):
+def mutateCustom(chromosome_child,wordsbylen,length_words):
     chromosome_child1=chromosome_child
     chromosome_child1=''.join(chromosome_child1)
     sol_board=findSolBoard(chromosome_child1)
@@ -689,6 +696,8 @@ def mutate(chromosome_child,wordsbylen,length_words):
         horizontalWordList.append(chromosome_child[w])
     verticalWordList=chromosome_child[len(horizontalWordList):]
 
+    global horizontalStartDict
+    global verticalStartDict
     #starting indexes of words should be subtracted from the rest
     horizontalStartDict={}
     for i in range(len(horizontal)):
@@ -731,37 +740,37 @@ def mutate(chromosome_child,wordsbylen,length_words):
 
                 #for entry in (horizontalIntersectionDict[chromosome_child[i]]):
                 # print horizontalIntersectionDict[chromosome_child[i]]
-                if (sol_board[entry[0]][entry[1]]!=''): #if there is not already a conflict there
-                    validWords = findNonConflictingWords(words, chromosome_child[i], horizontalIntersectionDict[chromosome_child[i]], True)
-                    # print "VALID WORDS"
-                    # print validWords
-                    chromosome_child[i]=random.choice(validWords)
-                else:
-                    random.shuffle(words)
-                    chromosome_child[i]=random.choice(words)
+
+                ##THIS IS NOT DIONG IT
+                #if (sol_board[entry[0]][entry[1]]!=''): #if there is not already a conflict there
+                validWords = findNonConflictingWords(words, chromosome_child[i], horizontalIntersectionDict[chromosome_child[i]], True, sol_board)
+                chromosome_child[i]=random.choice(validWords)
+                #else:
+                 #   random.shuffle(words)
+                  #  chromosome_child[i]=random.choice(words)
             else:
                 words = wordsbylen[len(chromosome_child[i])]
                 #for entry in (verticalIntersectionDict[chromosome_child[i]]):
-                if (sol_board[entry[0]][entry[1]]!=''): #if there is not already a conflict there
-                    validWords = findNonConflictingWords(words, chromosome_child[i], verticalIntersectionDict[chromosome_child[i]], False)
-                    # print "VALID WORDS"
-                    # print validWords
-                    chromosome_child[i]=random.choice(validWords)
-                else:
-                    random.shuffle(words)
-                    chromosome_child[i]=random.choice(words)
+                #if (sol_board[entry[0]][entry[1]]!=''): #if there is not already a conflict there
+                validWords = findNonConflictingWords(words, chromosome_child[i], verticalIntersectionDict[chromosome_child[i]], False, sol_board)
+                chromosome_child[i]=random.choice(validWords)
+                #else:
+                random.shuffle(words)
+                chromosome_child[i]=random.choice(words)
 
 
     return chromosome_child
-    # """for i in range(len(length_words)):
-    # 	if(random.random() <= mutation_rate):
-    #         words = wordsbylen[len(chromosome_child[i])]
-    #         random.shuffle(words)
-    #         chromosome_child[i]=random.choice(words)
-    # return chromosome_child"""
+
+def mutateRandom(chromosome_child,wordsbylen,length_words):
+    for i in range(len(length_words)):
+        if(random.random() <= mutation_rate):
+            words = wordsbylen[len(chromosome_child[i])]
+            random.shuffle(words)
+            chromosome_child[i]=random.choice(words)
+    return chromosome_child
 
 
-def findNonConflictingWords(wordsPossible, givenWord, intersectionsInWord, isHorizontal):
+def findNonConflictingWords(wordsPossible, givenWord, intersectionsInWord, isHorizontal, solBoard):
     validWords = wordsPossible[:]
     oldValids = validWords[:]
 
@@ -769,12 +778,16 @@ def findNonConflictingWords(wordsPossible, givenWord, intersectionsInWord, isHor
         del validWords[validWords.index(givenWord)]
 
     for intersection in intersectionsInWord:
-        oldValids = validWords[:]
-
         if isHorizontal == True:
             intersectionIndex = intersection[1]
         else:
             intersectionIndex = intersection[0]
+
+        #If there is already a conflict there, we will not consider that intersection as needing to be maintained
+        if solBoard[intersection[0]][intersection[1]]== '':
+            continue
+
+        oldValids = validWords[:]
 
         charDesired = givenWord[intersectionIndex]
         wordIndex = 0

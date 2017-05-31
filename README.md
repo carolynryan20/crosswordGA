@@ -7,7 +7,7 @@ We have four masks given in our project and they all will work.
 
 dependency: imports matplotlib.pyplot for graph popups
 
-The graphs that pop-up will chart the objective fitness maximums, minimums, and averages over all generations of the current run. 
+The graphs that pop-up will chart the objective fitness maximums, minimums, and averages over all generations of the current run.
 
 ## Our Additions
 
@@ -28,6 +28,7 @@ Thanks to Sherri Goings for help on this part.
 Added tournament selection. (tournament: line 376)
 
 Added custom mutation to only mutate to words that maintain intersection validity. (mutate: line 679)
+If you want to run the old (random) mutation method, set mutation_kind equal to "1" in settings.txt. If you want to switch back to the new (custom) mutation method, set mutation_kind equal to "0."
 
 Added a new objective fitness of letter weights, so less common letters are more likely to appear in the crosswords. (findTotalValue: line 830)
 
