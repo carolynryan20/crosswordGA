@@ -2,7 +2,8 @@
 
 executable: python genetic.py
 
-to change EA parameters look to settings.txt
+to change EA parameters look to settings.txt, a small note is some masks are still unable to be read, so if a mask is not working, change it a bit and try again.
+We have four masks given in our project and they all will work.
 
 dependency: imports matplotlib.pyplot for graph popups
 
