@@ -23,6 +23,8 @@ This project acts as a final project for CS 361: Evolutionary Computing and Arti
 executable: python genetic.py
 to change EA parameters look to settings.txt
 
+dependency: imports matplotlib.pyplot for graph popups
+
 ## Tests
 
 Example tests and parameters for settings.txt can be found in the report.pdf.
@@ -61,3 +63,5 @@ Added a new objective fitness of letter weights, so less common letters are more
 Added individual.py, a class that stores all information for individuals. (individual.py, integration throughout genetic.py)
 
 Added optional MOB or single objective fitnesses. (throughout, mostly fit calculation and selection)
+
+Added graphing ability to see the changes in fitness over time. (line 360, plots)
