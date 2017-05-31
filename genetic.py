@@ -633,8 +633,6 @@ def findNonDominatedFronts(individualList):
 
         index += 1
 
-
-
     # niche_count (i) = sum( share_value(i,j) ) for j = every individual in the population, including i itself!
     # The share_value of i and j is calculated as below.  (remember d(i,j) is the distance value between individuals i
     # and j that you worked out above).
