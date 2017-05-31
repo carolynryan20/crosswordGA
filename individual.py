@@ -1,5 +1,6 @@
+"""Stores the individual chromosomes for easy access to all their desired aspects.
+Authored by Nicki, Barr, and Carolyn"""
 class Individual():
-
     def __init__(self, chromosome, countConflictFit = 0, letterWeightFit = 0):
         self.chromosome = chromosome
         self.countConflictFit = countConflictFit
@@ -9,10 +10,8 @@ class Individual():
         self.rank = None
         self.sharedFit = 0
 
-
     def __str__(self):
         return "(" + str(self.chromosome) + ", (" + str(self.countConflictFit) + ", " + str(self.letterWeightFit) + "))"
-
 
     def dominates(self, other):
         if (self.letterWeightFit > other.letterWeightFit and self.countConflictFit < other.countConflictFit):
@@ -20,10 +19,6 @@ class Individual():
         else:
             return False
 
-
-    #d(i,j) = scaleX( F_i (objective X) - F_j (objective X) ) + scaleY( F_i (objective Y) - F_j(objective Y) )
-
-    # letter weight max: 2000
-    # intersection: #intersections in current grid
-
+    def __cmp__(self, other):
+        return self.chromosome.equals(other.chromosome)
 
