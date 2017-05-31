@@ -7,6 +7,8 @@ We have four masks given in our project and they all will work.
 
 dependency: imports matplotlib.pyplot for graph popups
 
+The graphs that pop-up will chart the objective fitness maximums, minimums, and averages over all generations of the current run. 
+
 ## Our Additions
 
 Changed how masks are read in order to read all valid masks (that is,
