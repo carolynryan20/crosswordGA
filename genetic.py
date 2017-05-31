@@ -268,7 +268,7 @@ def main():
 
         for k in range(printNumBest):
             if (k < len(n_best)):
-                print str(n_best[k][0]g) + " "+str(n_best[k][1]) + "\n"
+                print str(n_best[k][0]) + " "+str(n_best[k][1]) + "\n"
 
         avgScore = 0
         avgConflict = 0
