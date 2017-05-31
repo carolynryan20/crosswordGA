@@ -19,6 +19,3 @@ class Individual():
         else:
             return False
 
-    def __cmp__(self, other):
-        return self.chromosome.equals(other.chromosome)
-
